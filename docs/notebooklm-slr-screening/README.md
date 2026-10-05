@@ -3,7 +3,7 @@
 Bộ tài liệu gồm 3 phần:
 
 1. **Hướng dẫn cấu hình notebook** (mục A–C bên dưới).
-2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 7.600 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
+2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.300 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
 3. **Các prompt chạy từng lượt** (mục D).
 
 ---
@@ -46,11 +46,8 @@ Custom instructions áp dụng cho cả notebook, nên **tạo 2 notebook riêng
 
 1. Mở notebook, trong khung **Chat** bấm biểu tượng cấu hình (⚙ / *Configure notebook*). Tên mục có thể hơi khác tùy phiên bản.
 2. **Conversational goal / Define your conversational style** → chọn **Custom**.
-3. Mở [`custom-instructions.txt`](custom-instructions.txt) và điền 2 chỗ để trống:
-   - `[DANH SÁCH CẶP THỰC PHẨM MỤC TIÊU ...]`
-   - `[ĐỊNH NGHĨA RQ1–RQ4]`
-
-   Sau đó dán toàn bộ nội dung vào ô Custom. Không để lại ngoặc vuông: nếu còn, NotebookLM sẽ tự đoán (lượt pilot 1 đã tự suy ra "4 cặp thực phẩm mục tiêu" và gắn RQ1 cho mọi bài).
+3. Dán toàn bộ nội dung [`custom-instructions.txt`](custom-instructions.txt) vào ô Custom. File đã có sẵn câu hỏi tổng hợp, định nghĩa RQ1–RQ4 và 4 cặp thực phẩm mục tiêu.
+   - Sau khi lưu, chạy D0 để chắc nội dung không bị cắt.
 4. **Response length** → chọn **Longer**, để bảng nhiều dòng không bị cắt.
 5. Bấm **Save**. Mở chat mới để cấu hình có hiệu lực.
 
@@ -77,7 +74,9 @@ Thói quen khi chạy:
 - **IC1** gồm cả bài khái niệm/triết học, mẫu là nhân viên/nhà sản xuất, và bài chỉ phân tích đầu ra của AI.
 - **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ/dinh dưỡng.
 - Thực phẩm thay thế không thuộc danh sách mục tiêu và không có trong EC7 thì xếp **IC2**.
-- **RQ2-fit** chỉ gắn khi bài đo/thao tác trực tiếp sự phù hợp. Loại sản phẩm chỉ làm biến điều tiết thì chưa đủ.
+- **4 cặp thực phẩm** chỉ tính khi sản phẩm được định vị thay đúng một vế nguyên bản. Phô mai, sữa chua hay đồ uống lên men thực vật không tính là "sữa thực vật".
+- Thực phẩm thuộc danh sách EC7 thì dùng EC7, không dùng IC2, dù IC2 đứng trước trong thứ tự.
+- Bài có người chứng thực/nội dung tổng hợp nhưng chỉ đo kết quả ngoài danh mục (continued use, engagement, well-being…) vẫn gắn RQ1, nhưng tin cậy tối đa TB.
 - EC5: nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì **không** bị loại.
 - TierF-core "so sánh với nguyên bản" chỉ tính khi so sánh trên PI/WTP/lựa chọn. So sánh chỉ về cảm quan thì thuộc EC6 (Q6).
 - A-TF khác TierF ở chỗ có yếu tố truyền thông hoặc người chứng thực.
@@ -181,6 +180,7 @@ Chỉ dùng số liệu đã có trong các bảng, không sàng lọc lại.
 | Gắn PI quá rộng | continued use, information adoption, usage intention, engagement, travel intention | Định nghĩa PI hẹp |
 | Avatar trợ lý mua sắm được xếp A-T2 | *Demystifying the Impact of Homophily…* | EC2 gồm avatar trợ lý không chứng thực |
 | Nhãn thực vật xếp TierF thay vì A-TF | *From Niche to Norm…* | A-TF = có kích thích truyền thông (kể cả nhãn) |
-| Gắn RQ2-fit khi chỉ có điều tiết hedonic/utilitarian | *The power of facial allure…* | RQ2-fit chỉ khi đo fit trực tiếp |
+| Gắn RQ2-fit khi chỉ có điều tiết hedonic/utilitarian | *The power of facial allure…* | Ban đầu siết lại; **đã hoàn tác** sau khi có định nghĩa RQ2 chính thức (so sánh theo loại sản phẩm được tính). Notebook gắn đúng. |
 | Tin cậy đều là "Cao" | toàn bộ lô | Thêm thang Cao/TB/Thấp và giới hạn trần |
-| Tự suy ra "4 cặp thực phẩm mục tiêu" | pasta, cream cheese, fava spread | Thêm mục THỰC PHẨM MỤC TIÊU (cần người dùng điền) |
+| Tự suy ra "4 cặp thực phẩm mục tiêu" | pasta, cream cheese, fava spread | Thêm mục THỰC PHẨM MỤC TIÊU với 4 cặp chính thức; quy tắc EC7 ưu tiên hơn IC2 với thực phẩm |
+| RQ chưa có định nghĩa → RQ1 cho mọi bài | toàn bộ lô | Thêm câu hỏi tổng hợp, phạm vi kết quả đo và định nghĩa RQ1–RQ4 |

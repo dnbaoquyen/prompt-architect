@@ -3,7 +3,7 @@
 Bộ tài liệu gồm 3 phần:
 
 1. **Hướng dẫn cấu hình notebook** (mục A–C bên dưới).
-2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 6.200 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
+2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 7.600 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
 3. **Các prompt chạy từng lượt** (mục D).
 
 ---
@@ -29,7 +29,9 @@ Retraction: No
 Abstract: ...
 ```
 
-- Cột `Rank` và `Biz` là bắt buộc: prompt yêu cầu NotebookLM **không tự tra** xếp hạng tạp chí, chỉ dùng giá trị bạn cung cấp.
+- Trường `ID`, `Rank` và `Biz` là bắt buộc. NotebookLM được yêu cầu **không tự tra** xếp hạng tạp chí, chỉ dùng giá trị bạn cung cấp.
+  - Thiếu `ID` thì bảng sẽ có cột ID trống, như lượt pilot 1.
+  - Thiếu `Rank`/`Biz` thì IC7/EC10 không được xét.
 
 **Vòng toàn văn (FT)**
 
@@ -44,7 +46,11 @@ Custom instructions áp dụng cho cả notebook, nên **tạo 2 notebook riêng
 
 1. Mở notebook, trong khung **Chat** bấm biểu tượng cấu hình (⚙ / *Configure notebook*). Tên mục có thể hơi khác tùy phiên bản.
 2. **Conversational goal / Define your conversational style** → chọn **Custom**.
-3. Mở [`custom-instructions.txt`](custom-instructions.txt) và **điền định nghĩa RQ1–RQ4** vào các chỗ `[ĐỊNH NGHĨA ...]`. Đây là phần duy nhất cần bạn tự viết. Sau đó dán toàn bộ nội dung vào ô Custom.
+3. Mở [`custom-instructions.txt`](custom-instructions.txt) và điền 2 chỗ để trống:
+   - `[DANH SÁCH CẶP THỰC PHẨM MỤC TIÊU ...]`
+   - `[ĐỊNH NGHĨA RQ1–RQ4]`
+
+   Sau đó dán toàn bộ nội dung vào ô Custom. Không để lại ngoặc vuông: nếu còn, NotebookLM sẽ tự đoán (lượt pilot 1 đã tự suy ra "4 cặp thực phẩm mục tiêu" và gắn RQ1 cho mọi bài).
 4. **Response length** → chọn **Longer**, để bảng nhiều dòng không bị cắt.
 5. Bấm **Save**. Mở chat mới để cấu hình có hiệu lực.
 
@@ -66,6 +72,12 @@ Thói quen khi chạy:
 - Thứ tự xét loại theo đúng thứ tự trong danh sách của bạn. Mã đầu tiên thỏa là **mã loại chính**.
 - Thêm quyết định **UNCERTAIN** cho vòng TiAb (nguyên tắc "nghi ngờ thì giữ").
 - EC1: giữ bản đầy đủ nhất trong các bản trùng.
+- **PI hiểu theo nghĩa hẹp**: ý định mua/chọn sản phẩm. Ý định tiếp tục dùng, tiếp nhận thông tin, chấp nhận công nghệ, engagement hay ý định du lịch không tính là PI.
+- **EC2** gồm cả avatar giống người nhưng chỉ đóng vai trợ lý mua sắm/CSKH, không chứng thực sản phẩm.
+- **IC1** gồm cả bài khái niệm/triết học, mẫu là nhân viên/nhà sản xuất, và bài chỉ phân tích đầu ra của AI.
+- **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ/dinh dưỡng.
+- Thực phẩm thay thế không thuộc danh sách mục tiêu và không có trong EC7 thì xếp **IC2**.
+- **RQ2-fit** chỉ gắn khi bài đo/thao tác trực tiếp sự phù hợp. Loại sản phẩm chỉ làm biến điều tiết thì chưa đủ.
 - EC5: nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì **không** bị loại.
 - TierF-core "so sánh với nguyên bản" chỉ tính khi so sánh trên PI/WTP/lựa chọn. So sánh chỉ về cảm quan thì thuộc EC6 (Q6).
 - A-TF khác TierF ở chỗ có yếu tố truyền thông hoặc người chứng thực.
@@ -88,12 +100,14 @@ Nếu tóm tắt sai hoặc thiếu, nghĩa là custom instructions chưa đư�
 ```
 VÒNG: TIÊU ĐỀ–TÓM TẮT (TiAb)
 Nguồn: [Batch_01_ID001-040]
-Phạm vi: các bài có ID từ [001] đến [020].
+Phạm vi: các bài có ID từ [001] đến [020] (tối đa 20 bài/lượt).
 
 Sàng lọc từng bài theo đúng Bước 1 (xét loại theo thứ tự) và Bước 2 (gắn nhãn) trong hướng dẫn của notebook.
 - Để trống cột Tier F (vòng này chưa gắn).
 - Nghi ngờ thì chọn UNCERTAIN, không EXCLUDE.
 - Lý do phải trích dẫn câu trong tóm tắt hoặc metadata.
+- Mã loại chính phải là mã có số thứ tự nhỏ nhất trong các mã thỏa; tự kiểm tra trước khi xuất.
+- Không đánh "Cao" mặc định: áp dụng đúng thang ĐỘ TIN CẬY.
 Cuối bảng, xác nhận: "Đã xử lý N/N bài" và liệt kê ID bị thiếu (nếu có).
 ```
 
@@ -129,6 +143,19 @@ Xuất bảng: | ID giữ | ID loại (EC1) | Căn cứ trùng | Tin cậy |
 Không kết luận trùng nếu chỉ giống chủ đề.
 ```
 
+### D4b. Kiểm tra lại thứ tự mã và nhãn (chạy sau D1)
+
+```
+Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê và sửa các dòng vi phạm:
+(a) mã phụ có số nhỏ hơn mã chính;
+(b) có EC10 hoặc social-mkt khi nguồn không có trường Biz;
+(c) có gắn PI cho biến không phải ý định mua/chọn;
+(d) có RQ2-fit mà không đo trực tiếp fit/congruence;
+(e) TierF mà bài có nhãn, thông điệp hoặc người chứng thực (phải là A-TF);
+(f) ID trống.
+Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
+```
+
 ### D5. Tổng hợp cuối lô
 
 ```
@@ -139,3 +166,21 @@ Từ các bảng sàng lọc trong cuộc trò chuyện này, tổng hợp:
 4. Danh sách ID gắn snowball và context.
 Chỉ dùng số liệu đã có trong các bảng, không sàng lọc lại.
 ```
+
+---
+
+## E. Nhật ký hiệu chỉnh
+
+### Pilot 1 (50 bài, vòng TiAb)
+
+| Vấn đề quan sát | Ví dụ | Sửa trong instructions |
+| :--- | :--- | :--- |
+| Cột ID trống; mục kiểm tra có 50 dòng `****` | toàn bộ lô | Quy tắc ID dự phòng `STT-TácGiả-Năm`; báo thiếu Rank/Biz bằng một dòng chung |
+| Sai thứ tự mã chính/phụ | *Ethical Problems…* (IC2 > IC1); *Pseudo-Confidence…* (IC2 > EC2); *Stakeholder perspectives…* (EC5 > EC10) | Đánh số mã `01–13`, bắt buộc tự kiểm tra |
+| Dùng EC10 khi nguồn không có Biz | *Frontal facial analysis…*, *Yeast strains…* | Không có Biz thì cấm EC10/social-mkt |
+| Gắn PI quá rộng | continued use, information adoption, usage intention, engagement, travel intention | Định nghĩa PI hẹp |
+| Avatar trợ lý mua sắm được xếp A-T2 | *Demystifying the Impact of Homophily…* | EC2 gồm avatar trợ lý không chứng thực |
+| Nhãn thực vật xếp TierF thay vì A-TF | *From Niche to Norm…* | A-TF = có kích thích truyền thông (kể cả nhãn) |
+| Gắn RQ2-fit khi chỉ có điều tiết hedonic/utilitarian | *The power of facial allure…* | RQ2-fit chỉ khi đo fit trực tiếp |
+| Tin cậy đều là "Cao" | toàn bộ lô | Thêm thang Cao/TB/Thấp và giới hạn trần |
+| Tự suy ra "4 cặp thực phẩm mục tiêu" | pasta, cream cheese, fava spread | Thêm mục THỰC PHẨM MỤC TIÊU (cần người dùng điền) |

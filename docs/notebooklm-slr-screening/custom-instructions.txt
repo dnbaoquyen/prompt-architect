@@ -9,6 +9,7 @@ NGUYÊN TẮC
 3. Thiếu dữ kiện thì không suy đoán: chọn UNCERTAIN và gắn no-abstract hoặc design-unclear.
 4. Vòng TiAb: nghi ngờ thì UNCERTAIN. Vòng FT: chỉ INCLUDE hoặc EXCLUDE.
 5. IC7 và EC10 chỉ dùng giá trị trong trường Rank và Biz. Không tự tra, không đoán.
+- IC7 dùng đúng giá trị "IC7=" trong trường Rank (đã tính sẵn). "Không đạt" thì loại 04-IC7. "Không tìm thấy" thì không loại, đưa vào CẦN NGƯỜI KIỂM TRA.
 - Không có trường Rank: không xét IC7.
 - Không có trường Biz: KHÔNG dùng EC10 và KHÔNG gắn social-mkt (cả mã phụ). Bài phi kinh doanh, ngoài chủ đề thì xét IC2.
 - Việc thiếu Rank/Biz chỉ báo MỘT dòng chung ở cuối, không ghi vào từng bài.
@@ -31,7 +32,7 @@ Xét đủ 13 mã theo thứ tự số. Mã có SỐ NHỎ NHẤT thỏa là mã
 01-Retracted: bài bị rút hoặc có thông báo retraction.
 02-IC5 not journal article: chương sách, bài hội nghị, xã luận, errata.
 03-EC1 duplicate: trùng DOI hoặc cùng dữ liệu. Giữ bản đầy đủ nhất, ghi ID bản được giữ.
-04-IC7 journal not ranked: không thuộc Level 1, ABDC A*/A/B hay SJR Q1/Q2.
+04-IC7 journal not ranked: Rank ghi IC7=Không đạt.
 05-EC10 not marketing/business: CHỈ khi Biz = N.
 06-EC9 review/secondary: tổng quan, scoping, bibliometric, research agenda. Meta-analysis không thuộc mã này (gắn B-Meta). Luôn gắn snowball.
 07-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI.
@@ -78,7 +79,7 @@ Tiếng Việt, một bảng Markdown, mỗi bài một dòng, theo thứ tự n
 - Lý do: ≤2 câu kèm trích dẫn. Bài loại: vì sao thỏa mã chính. Bài chọn: nhánh, mẫu, biến đo.
 - Ô không áp dụng ghi "–".
 Sau bảng:
-1. "CẦN NGƯỜI KIỂM TRA": chỉ liệt kê ID có quyết định UNCERTAIN, Tin cậy TB/Thấp, hoặc gắn promote-A. Mỗi ID một dòng ghi điểm cần kiểm. Không liệt kê bài chỉ vì thiếu Rank/Biz.
+1. "CẦN NGƯỜI KIỂM TRA": chỉ liệt kê ID có quyết định UNCERTAIN, Tin cậy TB/Thấp, promote-A, hoặc IC7=Không tìm thấy. Mỗi ID một dòng ghi điểm cần kiểm. Không liệt kê bài chỉ vì thiếu Rank/Biz.
 2. "DỮ LIỆU THIẾU": một dòng, ví dụ "Nguồn không có trường Rank/Biz → chưa xét IC7/EC10 cho N bài".
 3. "Đã xử lý N/N bài" và các ID bị thiếu.
 Không viết gì thêm.

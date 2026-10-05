@@ -3,7 +3,7 @@
 Bộ tài liệu gồm 3 phần:
 
 1. **Hướng dẫn cấu hình notebook** (mục A–C bên dưới).
-2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.300 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
+2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.500 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.
 3. **Các prompt chạy từng lượt** (mục D).
 
 ---
@@ -11,6 +11,37 @@ Bộ tài liệu gồm 3 phần:
 ## A. Chuẩn bị nguồn (sources)
 
 NotebookLM tìm kiếm theo đoạn văn, nên bảng tính lớn dễ bị bỏ sót dòng. Vì vậy nên chia nhỏ dữ liệu.
+
+**Bước 0 – Tính sẵn IC7 bằng script (bắt buộc)**
+
+NotebookLM không tra được xếp hạng tạp chí một cách tin cậy: danh sách hợp lệ có khoảng 17.800 tạp chí. Vì vậy IC7 được tính trước bằng [`tools/rank_journals.py`](tools/rank_journals.py).
+
+IC7 **đạt** khi tạp chí thuộc ít nhất một danh sách:
+- Marketing Level 1 (gồm Elite);
+- ABDC JQL 2025 hạng A\*, A hoặc B;
+- SJR 2025 Best Quartile Q1 hoặc Q2.
+
+Script khớp theo ISSN trước, sau đó theo tên tạp chí.
+
+```bash
+pip install pandas openpyxl
+python3 tools/rank_journals.py \
+  --records file32.csv \
+  --sjr scimagojr_2025_1.csv \
+  --abdc ABDC-JQL-2025-v3-210926.xlsx \
+  --out out/ --batch-size 20
+```
+
+Kết quả:
+- `out/records_ranked.csv`: bản ghi gốc, thêm các cột `Level1`, `ABDC_2025`, `SJR_Q`, `IC7` (Đạt / Không đạt / Không tìm thấy).
+- `out/batches/Batch_XX_*.txt`: các lô 20 bài theo đúng định dạng khối bên dưới, tải thẳng lên NotebookLM.
+- `out/whitelist.csv`: toàn bộ tạp chí đạt IC7, để tra thủ công.
+
+Script tự nhận tên cột của Rayyan, Scopus và WoS. Nếu không nhận ra, dùng `--col-journal`, `--col-issn`, `--col-biz`…
+
+Ghi chú:
+- Cả 20 tạp chí Level 1 đều là SJR Q1, nên danh sách Level 1 không làm thay đổi kết quả. Nó chỉ được ghi thêm để tham khảo.
+- Script không loại bài hội nghị hay book series có hạng SJR; IC5 xử lý các trường hợp đó.
 
 **Vòng tiêu đề–tóm tắt (TiAb)**
 
@@ -22,7 +53,7 @@ NotebookLM tìm kiếm theo đoạn văn, nên bảng tính lớn dễ bị bỏ
 Title: ...
 Authors: ... | Year: ... | DOI: ...
 Journal: ... | Document type: Article
-Rank: Level=1 ; ABDC=A ; SJR=Q1
+Rank: Level1=Elite ; ABDC=A ; SJR=Q1 ; IC7=Đạt
 Biz: Y            (Y / N / ?)
 Group: A          (A / B)
 Retraction: No

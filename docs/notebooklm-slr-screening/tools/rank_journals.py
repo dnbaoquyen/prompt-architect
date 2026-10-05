@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Gắn xếp hạng tạp chí (IC7) cho file bản ghi và xuất các lô nguồn cho NotebookLM.
+"""Bước cuối: lọc hạng tạp chí (IC7) cho danh sách bài đã qua sàng lọc nội dung.
 
+Chạy SAU khi NotebookLM và người sàng lọc đã chốt danh sách INCLUDE.
 IC7 đạt khi tạp chí thuộc ít nhất một trong ba danh sách:
   - Danh sách Marketing Level 1 (gồm cả Elite Level 1)
   - ABDC JQL 2025: A*, A hoặc B
@@ -10,15 +11,15 @@ Khớp theo ISSN trước, sau đó theo tên tạp chí đã chuẩn hóa.
 
 Ví dụ:
   python3 rank_journals.py \
-      --records file32.csv \
+      --records danh_sach_cuoi.csv \
       --sjr scimagojr_2025.csv \
       --abdc ABDC-JQL-2025.xlsx \
       --out out/
 
 Kết quả:
-  out/records_ranked.csv     bản ghi gốc + cột Level1, ABDC_2025, SJR_Q, IC7
-  out/whitelist.csv          mọi tạp chí đạt IC7 (để tra thủ công)
-  out/batches/Batch_XX_*.txt các lô khối bản ghi để tải lên NotebookLM
+  out/records_ranked.csv  bản ghi + cột Level1, ABDC_2025, SJR_Q, SJR_Type, IC7
+  out/ic7_review.csv      chỉ các bài IC7 = Không đạt / Không tìm thấy (để kiểm tay)
+  out/whitelist.csv       mọi tạp chí đạt IC7 (để tra thủ công)
 """
 import argparse
 import os
@@ -140,7 +141,6 @@ def main():
     ap.add_argument("--sjr", required=True)
     ap.add_argument("--abdc", required=True)
     ap.add_argument("--out", default="out")
-    ap.add_argument("--batch-size", type=int, default=20)
     for k in COLS:
         ap.add_argument(f"--col-{k}", help=f"tên cột {k} nếu không tự nhận ra")
     a = ap.parse_args()
@@ -194,29 +194,9 @@ def main():
     res.to_csv(os.path.join(a.out, "records_ranked.csv"), index=False, encoding="utf-8-sig")
     print(res["IC7"].value_counts().to_string())
 
-    bdir = os.path.join(a.out, "batches")
-    os.makedirs(bdir, exist_ok=True)
-    get = lambda r, k: str(r[c[k]]).strip() if c[k] else ""
-    for b in range(0, len(res), a.batch_size):
-        part = res.iloc[b:b + a.batch_size]
-        first, last = get(part.iloc[0], "id"), get(part.iloc[-1], "id")
-        name = f"Batch_{b // a.batch_size + 1:02d}_ID{first}-{last}.txt"
-        with open(os.path.join(bdir, name), "w", encoding="utf-8") as f:
-            for _, r in part.iterrows():
-                f.write(
-                    f"=== ID: {get(r, 'id')} ===\n"
-                    f"Title: {get(r, 'title')}\n"
-                    f"Authors: {get(r, 'authors')} | Year: {get(r, 'year')} | DOI: {get(r, 'doi')}\n"
-                    f"Journal: {get(r, 'journal')} | Document type: {get(r, 'type')}\n"
-                    f"Rank: Level1={r['Level1'] or '-'} ; ABDC={r['ABDC_2025'] or '-'} ; "
-                    f"SJR={r['SJR_Q'] or '-'} ; IC7={r['IC7']}\n"
-                    f"Biz: {get(r, 'biz') or 'không có dữ liệu'}\n"
-                    f"Group: {get(r, 'group') or '-'}\n"
-                    f"Retraction: {get(r, 'retraction') or '-'}\n"
-                    f"Abstract: {get(r, 'abstract') or '(không có tóm tắt)'}\n\n"
-                )
-    print(f"Đã xuất {len(os.listdir(bdir))} lô vào {bdir}")
-
+    review = res[res["IC7"] != "Đạt"]
+    review.to_csv(os.path.join(a.out, "ic7_review.csv"), index=False, encoding="utf-8-sig")
+    print(f"ic7_review.csv: {len(review)} bài cần kiểm tay (Không đạt / Không tìm thấy)")
 
 if __name__ == "__main__":
     main()

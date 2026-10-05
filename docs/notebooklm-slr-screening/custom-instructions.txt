@@ -8,12 +8,11 @@ NGUYÊN TẮC
 2. ID: dùng trường "ID" của bài. Nếu bài không có ID, dùng "STT-TácGiảĐầu-Năm" (STT = thứ tự xuất hiện trong nguồn). Không bao giờ để trống cột ID.
 3. Thiếu dữ kiện thì không suy đoán: chọn UNCERTAIN và gắn no-abstract hoặc design-unclear.
 4. Vòng TiAb: nghi ngờ thì UNCERTAIN. Vòng FT: chỉ INCLUDE hoặc EXCLUDE.
-5. IC7 và EC10 chỉ dùng giá trị trong trường Rank và Biz. Không tự tra, không đoán.
-- IC7 dùng đúng giá trị "IC7=" trong trường Rank (đã tính sẵn). "Không đạt" thì loại 04-IC7. "Không tìm thấy" thì không loại, đưa vào CẦN NGƯỜI KIỂM TRA.
-- Không có trường Rank: không xét IC7.
-- Không có trường Biz: KHÔNG dùng EC10 và KHÔNG gắn social-mkt (cả mã phụ). Bài phi kinh doanh, ngoài chủ đề thì xét IC2.
-- Việc thiếu Rank/Biz chỉ báo MỘT dòng chung ở cuối, không ghi vào từng bài.
-6. "Mô phỏng" trong IC1 là mô hình/mô phỏng máy tính hoặc mô hình toán. "Thực phẩm mô phỏng" là sản phẩm thay thế. Không nhầm hai nghĩa.
+5. KHÔNG xét hạng tạp chí (IC7). Bước này được làm riêng sau khi có danh sách cuối. Không loại, không ghi chú, không giảm độ tin cậy vì tên hay hạng tạp chí.
+6. EC10 chỉ dùng giá trị trong trường Biz, không tự đoán.
+- Không có trường Biz: KHÔNG dùng EC10 và KHÔNG gắn social-mkt (cả ở mã phụ). Bài phi kinh doanh, ngoài chủ đề thì xét IC2.
+- Thiếu Biz chỉ báo MỘT dòng chung ở cuối, không ghi vào từng bài.
+7. "Mô phỏng" trong IC1 là mô hình/mô phỏng máy tính hoặc mô hình toán. "Thực phẩm mô phỏng" là sản phẩm thay thế. Không nhầm hai nghĩa.
 
 THỰC PHẨM MỤC TIÊU
 Đúng 4 cặp (mô phỏng – nguyên bản):
@@ -28,20 +27,19 @@ THỰC PHẨM MỤC TIÊU
 - WTP: mức giá sẵn sàng trả, đấu giá, choice/conjoint có thuộc tính giá.
 
 BƯỚC 1 – XÉT LOẠI (thứ tự bắt buộc)
-Xét đủ 13 mã theo thứ tự số. Mã có SỐ NHỎ NHẤT thỏa là mã loại chính, các mã khác thỏa là mã phụ. Ghi mã kèm số, ví dụ "07-IC1". Mã IC nghĩa là bài KHÔNG đạt tiêu chí chọn đó.
+Xét đủ 12 mã theo thứ tự số. Mã có SỐ NHỎ NHẤT thỏa là mã loại chính, các mã khác thỏa là mã phụ. Ghi mã kèm số, ví dụ "06-IC1". Mã IC nghĩa là bài KHÔNG đạt tiêu chí chọn đó.
 01-Retracted: bài bị rút hoặc có thông báo retraction.
 02-IC5 not journal article: chương sách, bài hội nghị, xã luận, errata.
 03-EC1 duplicate: trùng DOI hoặc cùng dữ liệu. Giữ bản đầy đủ nhất, ghi ID bản được giữ.
-04-IC7 journal not ranked: Rank ghi IC7=Không đạt.
-05-EC10 not marketing/business: CHỈ khi Biz = N.
-06-EC9 review/secondary: tổng quan, scoping, bibliometric, research agenda. Meta-analysis không thuộc mã này (gắn B-Meta). Luôn gắn snowball.
-07-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI.
-08-EC2 non-humanlike / non-endorser AI: chatbot, trợ lý giọng nói, robot, AI tạo sinh dạng công cụ (vd. ChatGPT). Gồm cả avatar giống người nhưng chỉ đóng vai trợ lý mua sắm/chăm sóc khách hàng, không giới thiệu hay chứng thực sản phẩm.
-09-EC3 deepfake technical/legal/political: phát hiện deepfake/nội dung AI, pháp lý, chính trị, tin giả; không đo phản ứng với nhãn hàng.
-10-IC2 not synthetic endorser/AI content/target food: VTuber/giải trí, AI "vô hình" (AI chạy ngầm), cá nhân hóa bằng AI, chủ đề ngoài phạm vi, hoặc thực phẩm ngoài 4 cặp mà KHÔNG thuộc danh sách EC7 (thực phẩm thuộc EC7 không dùng IC2).
-11-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật, hải sản thực vật.
-12-EC6 food: no WTP/PI: bài thực phẩm có mẫu người nhưng không đo PI/WTP/lựa chọn (chỉ chấp nhận, thái độ, cảm quan, tiêu thụ/dinh dưỡng). Gồm Q6: chỉ so sánh CẢM QUAN giữa sản phẩm mô phỏng và nguyên bản.
-13-EC5 qualitative/conceptual: phỏng vấn, focus group, netnography, phân tích nội dung/bình luận, case study. Luôn gắn context. Nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì không thuộc mã này.
+04-EC10 not marketing/business: CHỈ khi Biz = N.
+05-EC9 review/secondary: tổng quan, scoping, bibliometric, research agenda. Meta-analysis không thuộc mã này (gắn B-Meta). Luôn gắn snowball.
+06-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI.
+07-EC2 non-humanlike / non-endorser AI: chatbot, trợ lý giọng nói, robot, AI tạo sinh dạng công cụ (vd. ChatGPT). Gồm cả avatar giống người nhưng chỉ đóng vai trợ lý mua sắm/chăm sóc khách hàng, không giới thiệu hay chứng thực sản phẩm.
+08-EC3 deepfake technical/legal/political: phát hiện deepfake/nội dung AI, pháp lý, chính trị, tin giả; không đo phản ứng với nhãn hàng.
+09-IC2 not synthetic endorser/AI content/target food: VTuber/giải trí, AI "vô hình" (AI chạy ngầm), cá nhân hóa bằng AI, chủ đề ngoài phạm vi, hoặc thực phẩm ngoài 4 cặp mà KHÔNG thuộc danh sách EC7 (thực phẩm thuộc EC7 không dùng IC2).
+10-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật, hải sản thực vật.
+11-EC6 food: no WTP/PI: bài thực phẩm có mẫu người nhưng không đo PI/WTP/lựa chọn (chỉ chấp nhận, thái độ, cảm quan, tiêu thụ/dinh dưỡng). Gồm Q6: chỉ so sánh CẢM QUAN giữa sản phẩm mô phỏng và nguyên bản.
+12-EC5 qualitative/conceptual: phỏng vấn, focus group, netnography, phân tích nội dung/bình luận, case study. Luôn gắn context. Nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì không thuộc mã này.
 Tự kiểm tra trước khi xuất bảng: số của mã chính phải nhỏ hơn số của mọi mã phụ.
 
 BƯỚC 2 – GẮN NHÃN CHO BÀI GIỮ (INCLUDE hoặc UNCERTAIN)
@@ -79,7 +77,7 @@ Tiếng Việt, một bảng Markdown, mỗi bài một dòng, theo thứ tự n
 - Lý do: ≤2 câu kèm trích dẫn. Bài loại: vì sao thỏa mã chính. Bài chọn: nhánh, mẫu, biến đo.
 - Ô không áp dụng ghi "–".
 Sau bảng:
-1. "CẦN NGƯỜI KIỂM TRA": chỉ liệt kê ID có quyết định UNCERTAIN, Tin cậy TB/Thấp, promote-A, hoặc IC7=Không tìm thấy. Mỗi ID một dòng ghi điểm cần kiểm. Không liệt kê bài chỉ vì thiếu Rank/Biz.
-2. "DỮ LIỆU THIẾU": một dòng, ví dụ "Nguồn không có trường Rank/Biz → chưa xét IC7/EC10 cho N bài".
+1. "CẦN NGƯỜI KIỂM TRA": chỉ liệt kê ID có quyết định UNCERTAIN, Tin cậy TB/Thấp, hoặc promote-A. Mỗi ID một dòng ghi điểm cần kiểm. Không liệt kê bài chỉ vì thiếu Biz.
+2. "DỮ LIỆU THIẾU": một dòng, ví dụ "Nguồn không có trường Biz → chưa xét EC10 cho N bài".
 3. "Đã xử lý N/N bài" và các ID bị thiếu.
 Không viết gì thêm.

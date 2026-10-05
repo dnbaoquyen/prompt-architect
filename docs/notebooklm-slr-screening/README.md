@@ -1,6 +1,6 @@
 # Sàng lọc bài báo SLR bằng NotebookLM
 
-Bộ tài liệu gồm 2 phần:
+Bộ tài liệu gồm 3 phần:
 
 1. **Hướng dẫn cấu hình notebook** (mục A–C bên dưới).
 2. **Custom instructions** dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 6.200 ký tự, dưới giới hạn 10.000 ký tự của NotebookLM.

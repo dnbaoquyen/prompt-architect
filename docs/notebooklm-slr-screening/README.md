@@ -4,15 +4,15 @@ Quy trình gồm 2 giai đoạn:
 
 | Giai đoạn | Ai làm | Tiêu chí |
 | :--- | :--- | :--- |
-| **1. Sàng lọc nội dung** (TiAb → FT) | NotebookLM + người kiểm tra | 12 mã loại (mọi mã trừ IC7) và nhãn chọn |
-| **2. Lọc hạng tạp chí (IC7)** | Script [`tools/rank_journals.py`](tools/rank_journals.py) + người kiểm tra | Level 1 / ABDC A\*–A–B / SJR Q1–Q2 |
+| **1. Sàng lọc nội dung** (TiAb → FT) | NotebookLM + người kiểm tra | 11 mã loại (mọi mã trừ IC7 và EC10) và nhãn chọn |
+| **2. Lọc tạp chí** (IC7 + EC10) | Script [`tools/rank_journals.py`](tools/rank_journals.py) + người kiểm tra | Hạng: Level 1 / ABDC A\*–A–B / SJR Q1–Q2. Lĩnh vực: cờ Biz suy từ lĩnh vực tạp chí |
 
-NotebookLM **không xét hạng tạp chí**. IC7 chỉ áp dụng cho danh sách cuối, sau khi đã chốt INCLUDE theo nội dung (mục E).
+NotebookLM **không xét hạng tạp chí và lĩnh vực kinh doanh**. IC7, EC10 và nhãn social-mkt chỉ áp dụng cho danh sách cuối, sau khi đã chốt INCLUDE theo nội dung (mục E).
 
 Bộ tài liệu gồm:
 
 1. Hướng dẫn chuẩn bị nguồn và cấu hình notebook (mục A–C).
-2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.300 ký tự (giới hạn của NotebookLM là 10.000).
+2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.250 ký tự (giới hạn của NotebookLM là 10.000).
 3. Các prompt chạy từng lượt (mục D).
 4. Bước lọc tạp chí cuối cùng (mục E).
 
@@ -38,15 +38,13 @@ Mỗi bài trong lô là một khối có nhãn trường rõ ràng, để mô h
 Title: ...
 Authors: ... | Year: ... | DOI: ...
 Journal: ... | Document type: Article
-Biz: Y            (Y / N / ?)
 Group: A          (A / B)
 Retraction: No
 Abstract: ...
 ```
 
-- Script tự nhận tên cột theo kiểu xuất của Rayyan, Scopus và WoS. Nếu không nhận ra, dùng `--col-title`, `--col-abstract`, `--col-biz`…
+- Script tự nhận tên cột theo kiểu xuất của Rayyan, Scopus và WoS. Nếu không nhận ra, dùng `--col-title`, `--col-abstract`…
 - File không có cột ID thì script tự đánh số `001, 002, …`. **Giữ nguyên ID này** suốt quy trình, đến bước lọc tạp chí.
-- Không có cột Biz thì NotebookLM bỏ qua EC10 và nhãn social-mkt.
 - Tải các file `out/batches/Batch_XX_*.txt` lên NotebookLM.
 
 **Vòng toàn văn (FT)**
@@ -82,7 +80,8 @@ Khi chạy:
 ### Các giả định trong instructions (sửa nếu không đúng ý bạn)
 
 **Quy trình và thứ tự mã**
-- Thứ tự xét loại theo danh sách gốc, **bỏ IC7**. Còn lại 12 mã, đánh số `01–12`; mã có số nhỏ nhất thỏa là **mã loại chính**.
+- Thứ tự xét loại theo danh sách gốc, **bỏ IC7 và EC10** (chuyển xuống bước cuối). Còn lại 11 mã, đánh số `01–11`; mã có số nhỏ nhất thỏa là **mã loại chính**.
+- Bài thuộc bối cảnh phi marketing được ghi "Lĩnh vực: …" trong cột Lý do, để đối chiếu với cờ Biz ở bước cuối.
 - Thêm quyết định **UNCERTAIN** cho vòng TiAb (nghi ngờ thì giữ).
 - EC1: giữ bản đầy đủ nhất trong các bản trùng.
 
@@ -90,12 +89,12 @@ Khi chạy:
 - **4 cặp thực phẩm** chỉ tính khi sản phẩm được định vị thay đúng một vế nguyên bản. Phô mai, sữa chua và đồ uống lên men thực vật không tính là "sữa thực vật".
 - Thực phẩm thuộc danh sách EC7 thì dùng EC7, không dùng IC2.
 - Thực phẩm ngoài 4 cặp và ngoài EC7 thì dùng IC2.
-- **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ/dinh dưỡng.
+- **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ tự báo cáo/dinh dưỡng. Bài chỉ đo tiêu thụ tự báo cáo hoặc yếu tố quyết định tiêu thụ được gắn thêm `context`, để vẫn dùng được trong phần dẫn nhập và thảo luận.
 - **TierF-core** "so sánh với nguyên bản" chỉ tính khi so sánh trên PI/WTP/lựa chọn. So sánh chỉ về cảm quan thì thuộc EC6 (Q6).
 - **A-TF** khác TierF ở chỗ có kích thích truyền thông (nhãn, thông điệp, quảng cáo, người chứng thực).
 
 **Biến đo và RQ**
-- **PI theo nghĩa hẹp**: ý định mua/chọn sản phẩm, hoặc lựa chọn trong thực nghiệm/dữ liệu bán hàng. Mức tiêu thụ tự báo cáo không phải PI, nên bài thực phẩm chỉ đo tiêu thụ thuộc EC6.
+- **PI theo nghĩa hẹp**: ý định mua/chọn sản phẩm, hoặc dữ liệu mua/chọn **khách quan** (lựa chọn trong thực nghiệm, lựa chọn có khuyến khích, scanner, dữ liệu bán hàng). Mức tiêu thụ **tự báo cáo** không phải PI.
 - **Kết quả đo trong phạm vi**: WTP, PI, độ tin cậy/niềm tin, tính chân thực, cảm nhận đổi mới, thái độ với quảng cáo/thương hiệu. Bài đo ít nhất một biến này là "trong phạm vi".
 - **RQ3** không tính realism, anthropomorphism, attractiveness.
 - Bài có người chứng thực/nội dung tổng hợp nhưng không đo biến nào trong phạm vi (chỉ continued use, engagement, well-being…) vẫn gắn RQ1, nhưng tin cậy tối đa TB.
@@ -113,10 +112,10 @@ Khi chạy:
 ### D0. Kiểm tra cấu hình (chạy 1 lần khi mở notebook)
 
 ```
-Trước khi sàng lọc, hãy tóm tắt lại bằng 1 bảng: thứ tự 12 mã loại (01–12), điều kiện đặc biệt của EC10, EC9, EC5, sự khác nhau giữa A-TF và TierF, và 4 cặp thực phẩm mục tiêu. Xác nhận bạn có xét hạng tạp chí hay không. Không sàng lọc bài nào.
+Trước khi sàng lọc, hãy tóm tắt lại bằng 1 bảng: thứ tự 11 mã loại (01–11), điều kiện đặc biệt của EC9, EC5, EC6, sự khác nhau giữa A-TF và TierF, và 4 cặp thực phẩm mục tiêu. Xác nhận bạn có xét hạng tạp chí và lĩnh vực kinh doanh (EC10) hay không. Không sàng lọc bài nào.
 ```
 
-Nếu tóm tắt sai, thiếu, hoặc nói có xét hạng tạp chí, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
+Nếu tóm tắt sai, thiếu, hoặc nói có xét hạng tạp chí/EC10, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
 
 ### D1. Sàng lọc vòng tiêu đề–tóm tắt
 
@@ -125,8 +124,8 @@ VÒNG: TIÊU ĐỀ–TÓM TẮT (TiAb)
 Nguồn: [Batch_01_ID001-020]
 Phạm vi: tất cả các bài trong nguồn này (tối đa 20 bài).
 
-Sàng lọc từng bài theo đúng Bước 1 (xét 12 mã theo thứ tự) và Bước 2 (gắn nhãn) trong hướng dẫn của notebook.
-- Không xét hạng tạp chí.
+Sàng lọc từng bài theo đúng Bước 1 (xét 11 mã theo thứ tự) và Bước 2 (gắn nhãn) trong hướng dẫn của notebook.
+- Không xét hạng tạp chí, không dùng EC10, không gắn social-mkt.
 - Cột Tier F ghi "–" (vòng này chưa gắn).
 - Nghi ngờ thì chọn UNCERTAIN, không EXCLUDE.
 - Lý do phải trích dẫn câu trong tóm tắt hoặc metadata.
@@ -171,17 +170,18 @@ Không kết luận trùng nếu chỉ giống chủ đề.
 ```
 Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê và sửa các dòng vi phạm:
 (a) mã phụ có số nhỏ hơn mã chính;
-(b) có EC10 hoặc social-mkt khi nguồn không có trường Biz;
+(b) có dùng EC10 hoặc gắn social-mkt (cả hai đã chuyển xuống bước cuối);
 (c) có gắn PI cho biến không phải ý định mua/chọn;
 (d) có RQ2-fit mà không đo/thao tác fit và không so sánh theo loại sản phẩm;
 (e) TierF mà bài có nhãn, thông điệp hoặc người chứng thực (phải là A-TF);
 (f) loại hoặc ghi chú vì tạp chí/hạng tạp chí;
 (g) ID trống;
 (h) ghi "kết quả ngoài phạm vi" dù bài có đo độ tin cậy/niềm tin, tính chân thực, thái độ, cảm nhận đổi mới, PI hoặc WTP;
-(i) gắn PI hoặc INCLUDE cho bài thực phẩm chỉ đo mức tiêu thụ tự báo cáo (phải là 11-EC6);
+(i) gắn PI hoặc INCLUDE cho bài thực phẩm chỉ đo mức tiêu thụ tự báo cáo (phải là 10-EC6 + context);
 (j) gắn RQ3 cho realism, anthropomorphism, attractiveness;
-(k) dùng 08-EC3 cho bài không nói về deepfake/phát hiện nội dung AI;
-(l) dùng 11-EC6 cho thực phẩm ngoài 4 cặp.
+(k) dùng 07-EC3 cho bài không nói về deepfake/phát hiện nội dung AI;
+(l) dùng 10-EC6 cho thực phẩm ngoài 4 cặp;
+(m) bài phi marketing nhưng không ghi "Lĩnh vực: …" trong cột Lý do.
 Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
 ```
 
@@ -199,7 +199,7 @@ Chỉ dùng số liệu đã có trong các bảng, không sàng lọc lại.
 
 ---
 
-## E. Bước cuối: lọc hạng tạp chí (IC7)
+## E. Bước cuối: lọc tạp chí (IC7 + EC10)
 
 Làm sau khi đã chốt danh sách INCLUDE ở vòng FT. Bước này không dùng NotebookLM.
 
@@ -215,16 +215,31 @@ Làm sau khi đã chốt danh sách INCLUDE ở vòng FT. Bước này không d�
    ```
 
 3. Kết quả:
-   - `out/records_ranked.csv`: danh sách cuối kèm các cột `Level1`, `ABDC_2025`, `SJR_Q`, `IC7` (Đạt / Không đạt / Không tìm thấy).
-   - `out/ic7_review.csv`: chỉ những bài **Không đạt** hoặc **Không tìm thấy**. Kiểm tay những bài này, vì tên tạp chí có thể viết khác hoặc tạp chí có thể đã đổi tên.
+   - `out/records_ranked.csv`: danh sách cuối, thêm các cột:
+     - `Level1`, `ABDC_2025`, `SJR_Q`, `SJR_Areas`;
+     - `IC7` (Đạt / Không đạt / Không tìm thấy);
+     - `Biz` (Y / ? / N / Không xác định), `EC10` (Loại khi Biz = N), `Tag` (social-mkt khi Biz = ?).
+   - `out/final_review.csv`: chỉ những bài cần kiểm tay, tức IC7 chưa đạt, hoặc Biz là N / Không xác định.
    - `out/whitelist.csv`: toàn bộ khoảng 17.800 tạp chí đạt IC7, để tra thủ công.
 
-IC7 **đạt** khi tạp chí thuộc ít nhất một danh sách: Marketing Level 1 (gồm Elite), ABDC JQL 2025 hạng A\*/A/B, hoặc SJR 2025 Best Quartile Q1/Q2. Script khớp theo ISSN trước, sau đó theo tên tạp chí.
+**IC7 đạt** khi tạp chí thuộc ít nhất một danh sách: Marketing Level 1 (gồm Elite), ABDC JQL 2025 hạng A\*/A/B, hoặc SJR 2025 Best Quartile Q1/Q2.
+
+**Cờ Biz** được suy ra từ lĩnh vực tạp chí:
+
+| Biz | Điều kiện | Xử lý |
+| :--- | :--- | :--- |
+| Y | Có trong ABDC hoặc Level 1, hoặc SJR Areas có Business / Economics / Decision Sciences | Giữ |
+| ? | SJR Areas có Psychology / Social Sciences / Arts and Humanities / Multidisciplinary, hoặc Categories có Food Science, Nutrition, Communication, Tourism, Human-Computer Interaction | Giữ, gắn `social-mkt` |
+| N | Tìm thấy tạp chí nhưng không thuộc các nhóm trên (vd. y khoa thuần, nha khoa, kỹ thuật) | EC10, kiểm tay trước khi loại |
+| Không xác định | Không tìm thấy tạp chí | Kiểm tay |
 
 Ghi chú:
-- Cả 20 tạp chí Level 1 đều là SJR Q1, nên danh sách Level 1 không làm thay đổi kết quả.
+- **Food Science buộc phải xếp `?`.** Phần lớn bài TierF cốt lõi đăng trên tạp chí khoa học thực phẩm (*Food Quality and Preference*, *Appetite*, *Foods*). Nếu xếp N, các bài này sẽ bị loại oan.
+- Cờ Biz đánh giá theo **tạp chí**, không theo bài. Hãy đối chiếu với ghi chú "Lĩnh vực: …" mà NotebookLM để lại trong cột Lý do. Ví dụ: một bài quảng cáo y tế đăng trên tạp chí truyền thông sẽ có Biz = ?.
+- Script khớp theo ISSN trước, sau đó theo tên tạp chí.
+- Cả 20 tạp chí Level 1 đều là SJR Q1, nên danh sách Level 1 không làm thay đổi kết quả IC7.
 - Trong PDF Level 1, "JAMS" được hiểu là *Journal of the Academy of Marketing Science*, và "Journal of Services Research" là *Journal of Service Research*.
-- PRISMA: ghi số bài loại do IC7 thành một bước riêng, sau sàng lọc toàn văn.
+- PRISMA: ghi số bài loại do IC7 và do EC10 thành các bước riêng, sau sàng lọc toàn văn.
 - Dữ liệu SJR/ABDC không được đưa lên repo. Thư mục `out/` đã được loại khỏi git.
 
 ---
@@ -261,3 +276,8 @@ Người dùng đổi cột tiêu đề thành **Tiêu đề gốc** (đã cập
 | Gắn mã phụ EC3 cho bài không về deepfake | R0001 | EC3 chỉ dùng khi bài nói về deepfake/phát hiện nội dung AI |
 | Gắn EC6 cho thực phẩm ngoài 4 cặp | R0002 | EC6 chỉ áp dụng cho thực phẩm thuộc 4 cặp |
 | Đồ uống thực vật chưa rõ định vị nhưng chấm IC2 "Cao" | R0002 | Giữ quy tắc "không rõ định vị → UNCERTAIN"; D4b kiểm tra |
+
+### Quyết định sau pilot 2
+
+- **Mức tiêu thụ tự báo cáo** (R0028): loại theo **EC6**, gắn `context`. Dữ liệu mua/chọn khách quan vẫn tính là PI.
+- **EC10**: giữ trong đề cương, nhưng chuyển khỏi NotebookLM xuống bước cuối. Cờ Biz suy từ lĩnh vực tạp chí (SJR Areas/Categories, ABDC), và Food Science được xếp `?`. Các mã còn lại được đánh số lại `01–11`.

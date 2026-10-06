@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
-"""Bước cuối: lọc hạng tạp chí (IC7) cho danh sách bài đã qua sàng lọc nội dung.
+"""Bước cuối: lọc hạng tạp chí (IC7) và lĩnh vực tạp chí (EC10) cho danh sách bài
+đã qua sàng lọc nội dung.
 
 Chạy SAU khi NotebookLM và người sàng lọc đã chốt danh sách INCLUDE.
+
 IC7 đạt khi tạp chí thuộc ít nhất một trong ba danh sách:
   - Danh sách Marketing Level 1 (gồm cả Elite Level 1)
   - ABDC JQL 2025: A*, A hoặc B
   - SCImago (SJR) Best Quartile: Q1 hoặc Q2
+
+Cờ Biz (cho EC10) suy ra từ lĩnh vực của tạp chí:
+  - Y : có trong ABDC hoặc Level 1, hoặc SJR Areas có Business / Economics / Decision Sciences
+  - ? : SJR Areas có Psychology / Social Sciences / Arts and Humanities / Multidisciplinary,
+        hoặc Categories có Food Science, Nutrition, Communication, Tourism, Human-Computer
+        Interaction  -> giữ, gắn social-mkt
+  - N : tìm thấy tạp chí nhưng không thuộc các nhóm trên -> EC10 (vẫn cần kiểm tay)
+  - Không xác định: không tìm thấy tạp chí
 
 Khớp theo ISSN trước, sau đó theo tên tạp chí đã chuẩn hóa.
 
@@ -17,8 +27,9 @@ Ví dụ:
       --out out/
 
 Kết quả:
-  out/records_ranked.csv  bản ghi + cột Level1, ABDC_2025, SJR_Q, SJR_Type, IC7
-  out/ic7_review.csv      chỉ các bài IC7 = Không đạt / Không tìm thấy (để kiểm tay)
+  out/records_ranked.csv  bản ghi + cột Level1, ABDC_2025, SJR_Q, SJR_Type, SJR_Areas,
+                          IC7, Biz, EC10, Tag
+  out/final_review.csv    chỉ các bài cần kiểm tay: IC7 khác "Đạt" hoặc Biz khác "Y"/"?"
   out/whitelist.csv       mọi tạp chí đạt IC7 (để tra thủ công)
 """
 import argparse
@@ -87,7 +98,7 @@ def load_sjr(path):
     by_issn, by_title = {}, {}
     for _, r in df.iterrows():
         q = r["SJR Best Quartile"].strip()
-        rec = (q if q != "-" else "", r["Type"])
+        rec = (q if q != "-" else "", r["Type"], r["Areas"], r["Categories"])
         for i in issns(r["Issn"]):
             by_issn.setdefault(i, rec)
         by_title.setdefault(norm_title(r["Title"]), rec)
@@ -108,6 +119,20 @@ def load_abdc(path):
             by_issn.setdefault(i, rank)
         by_title.setdefault(norm_title(r["Journal Title"]), rank)
     return df, rating, by_issn, by_title
+
+
+BIZ_AREAS = ("business, management and accounting", "economics, econometrics and finance", "decision sciences")
+SOCIAL_AREAS = ("psychology", "social sciences", "arts and humanities", "multidisciplinary")
+SOCIAL_CATS = ("food science", "nutrition", "communication", "tourism", "human-computer interaction", "marketing")
+
+
+def biz_of(in_abdc_or_level1, areas, cats):
+    a, c = areas.lower(), cats.lower()
+    if in_abdc_or_level1 or any(x in a for x in BIZ_AREAS):
+        return "Y"
+    if any(x in a for x in SOCIAL_AREAS) or any(x in c for x in SOCIAL_CATS):
+        return "?"
+    return "N" if (areas or cats) else "Không xác định"
 
 
 def level1_of(title):
@@ -181,22 +206,26 @@ def main():
         ids = issns(" ".join(str(r[c[k]]) for k in ("issn", "eissn") if c[k]))
         jt = norm_title(r[c["journal"]]) if c["journal"] else ""
         abdc = next((abdc_issn[i] for i in ids if i in abdc_issn), abdc_title.get(jt, ""))
-        sq, stype = next((sjr_issn[i] for i in ids if i in sjr_issn), sjr_title.get(jt, ("", "")))
+        sq, stype, areas, cats = next((sjr_issn[i] for i in ids if i in sjr_issn), sjr_title.get(jt, ("", "", "", "")))
         lv = level1_of(r[c["journal"]]) if c["journal"] else ""
         found = bool(abdc or sq or lv)
         ok = lv or abdc in ("A*", "A", "B") or sq in ("Q1", "Q2")
-        out.append({"Level1": lv, "ABDC_2025": abdc, "SJR_Q": sq, "SJR_Type": stype,
-                    "IC7": "Đạt" if ok else ("Không đạt" if found else "Không tìm thấy")})
+        biz = biz_of(bool(abdc or lv), areas, cats)
+        out.append({"Level1": lv, "ABDC_2025": abdc, "SJR_Q": sq, "SJR_Type": stype, "SJR_Areas": areas,
+                    "IC7": "Đạt" if ok else ("Không đạt" if found else "Không tìm thấy"),
+                    "Biz": biz, "EC10": "Loại" if biz == "N" else "",
+                    "Tag": "social-mkt" if biz == "?" else ""})
     res = pd.concat([df.reset_index(drop=True), pd.DataFrame(out)], axis=1)
     if not c["id"]:
         res.insert(0, "ID", [f"{i + 1:03d}" for i in range(len(res))])
         c["id"] = "ID"
     res.to_csv(os.path.join(a.out, "records_ranked.csv"), index=False, encoding="utf-8-sig")
     print(res["IC7"].value_counts().to_string())
+    print(res["Biz"].value_counts().to_string())
 
-    review = res[res["IC7"] != "Đạt"]
-    review.to_csv(os.path.join(a.out, "ic7_review.csv"), index=False, encoding="utf-8-sig")
-    print(f"ic7_review.csv: {len(review)} bài cần kiểm tay (Không đạt / Không tìm thấy)")
+    review = res[(res["IC7"] != "Đạt") | ~res["Biz"].isin(["Y", "?"])]
+    review.to_csv(os.path.join(a.out, "final_review.csv"), index=False, encoding="utf-8-sig")
+    print(f"final_review.csv: {len(review)} bài cần kiểm tay (IC7 chưa đạt hoặc Biz = N / Không xác định)")
 
 if __name__ == "__main__":
     main()

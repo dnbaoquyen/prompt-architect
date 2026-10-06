@@ -48,7 +48,6 @@ def main():
                     f"Title: {get(r, 'title')}\n"
                     f"Authors: {get(r, 'authors')} | Year: {get(r, 'year')} | DOI: {get(r, 'doi')}\n"
                     f"Journal: {get(r, 'journal')} | Document type: {get(r, 'type')}\n"
-                    f"Biz: {get(r, 'biz') or 'không có dữ liệu'}\n"
                     f"Group: {get(r, 'group') or '-'}\n"
                     f"Retraction: {get(r, 'retraction') or '-'}\n"
                     f"Abstract: {get(r, 'abstract') or '(không có tóm tắt)'}\n\n"

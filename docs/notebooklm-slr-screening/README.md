@@ -12,7 +12,7 @@ NotebookLM **không xét hạng tạp chí và lĩnh vực kinh doanh**. IC7, EC
 Bộ tài liệu gồm:
 
 1. Hướng dẫn chuẩn bị nguồn và cấu hình notebook (mục A–C).
-2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.550 ký tự (giới hạn của NotebookLM là 10.000).
+2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 7.800 ký tự (giới hạn của NotebookLM là 10.000). Đếm bằng `python3 -c "print(len(open('custom-instructions.txt',encoding='utf-8').read()))"`; không dùng `wc -m` vì lệnh này có thể đếm byte với tiếng Việt.
 3. Các prompt chạy từng lượt (mục D).
 4. Bước lọc tạp chí cuối cùng (mục E).
 

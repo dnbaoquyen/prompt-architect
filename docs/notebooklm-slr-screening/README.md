@@ -95,8 +95,10 @@ Khi chạy:
 - **A-TF** khác TierF ở chỗ có kích thích truyền thông (nhãn, thông điệp, quảng cáo, người chứng thực).
 
 **Biến đo và RQ**
-- **PI theo nghĩa hẹp**: ý định mua/chọn sản phẩm.
-- Bài có người chứng thực/nội dung tổng hợp nhưng chỉ đo kết quả ngoài danh mục (continued use, engagement, well-being…) vẫn gắn RQ1, nhưng tin cậy tối đa TB.
+- **PI theo nghĩa hẹp**: ý định mua/chọn sản phẩm, hoặc lựa chọn trong thực nghiệm/dữ liệu bán hàng. Mức tiêu thụ tự báo cáo không phải PI, nên bài thực phẩm chỉ đo tiêu thụ thuộc EC6.
+- **Kết quả đo trong phạm vi**: WTP, PI, độ tin cậy/niềm tin, tính chân thực, cảm nhận đổi mới, thái độ với quảng cáo/thương hiệu. Bài đo ít nhất một biến này là "trong phạm vi".
+- **RQ3** không tính realism, anthropomorphism, attractiveness.
+- Bài có người chứng thực/nội dung tổng hợp nhưng không đo biến nào trong phạm vi (chỉ continued use, engagement, well-being…) vẫn gắn RQ1, nhưng tin cậy tối đa TB.
 
 **Phân định các mã khác**
 - **EC2** gồm cả avatar giống người chỉ đóng vai trợ lý mua sắm/CSKH.
@@ -174,7 +176,12 @@ Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê 
 (d) có RQ2-fit mà không đo/thao tác fit và không so sánh theo loại sản phẩm;
 (e) TierF mà bài có nhãn, thông điệp hoặc người chứng thực (phải là A-TF);
 (f) loại hoặc ghi chú vì tạp chí/hạng tạp chí;
-(g) ID trống.
+(g) ID trống;
+(h) ghi "kết quả ngoài phạm vi" dù bài có đo độ tin cậy/niềm tin, tính chân thực, thái độ, cảm nhận đổi mới, PI hoặc WTP;
+(i) gắn PI hoặc INCLUDE cho bài thực phẩm chỉ đo mức tiêu thụ tự báo cáo (phải là 11-EC6);
+(j) gắn RQ3 cho realism, anthropomorphism, attractiveness;
+(k) dùng 08-EC3 cho bài không nói về deepfake/phát hiện nội dung AI;
+(l) dùng 11-EC6 cho thực phẩm ngoài 4 cặp.
 Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
 ```
 
@@ -239,3 +246,18 @@ Ghi chú:
 | Tin cậy đều là "Cao" | toàn bộ lô | Thêm thang Cao/TB/Thấp và giới hạn trần |
 | Tự suy ra "4 cặp thực phẩm mục tiêu" | pasta, cream cheese, fava spread | Thêm 4 cặp chính thức; EC7 ưu tiên hơn IC2 với thực phẩm |
 | RQ chưa có định nghĩa, RQ1 cho mọi bài | toàn bộ lô | Thêm câu hỏi tổng hợp, phạm vi kết quả đo, định nghĩa RQ1–RQ4 |
+
+### Pilot 2 (cùng 50 bài, vòng TiAb, sau khi bỏ IC7)
+
+Đã khắc phục so với pilot 1: ID đầy đủ; thứ tự mã đúng; không còn dùng EC10 khi thiếu Biz; PI hẹp hơn; R0017 sang EC2; R0029 sang A-TF; độ tin cậy có phân tầng; mục kiểm tra chỉ còn 8 bài thật sự cần xem.
+
+Người dùng đổi cột tiêu đề thành **Tiêu đề gốc** (đã cập nhật vào instructions).
+
+| Vấn đề còn lại | Ví dụ | Sửa trong instructions |
+| :--- | :--- | :--- |
+| Coi mức tiêu thụ tự báo cáo là PI, INCLUDE bài lẽ ra phải là EC6 | R0028 *The meat of the matter…* | PI loại trừ tiêu thụ tự báo cáo; EC6 nêu rõ "tiêu thụ tự báo cáo" |
+| Ghi "ngoài phạm vi" dù bài đo authenticity/trust/credibility | R0025, R0027, R0004 | Thêm danh mục KẾT QUẢ ĐO TRONG PHẠM VI có từ đồng nghĩa |
+| Gắn RQ3 cho form realism | R0035 | RQ3 loại trừ realism, anthropomorphism, attractiveness |
+| Gắn mã phụ EC3 cho bài không về deepfake | R0001 | EC3 chỉ dùng khi bài nói về deepfake/phát hiện nội dung AI |
+| Gắn EC6 cho thực phẩm ngoài 4 cặp | R0002 | EC6 chỉ áp dụng cho thực phẩm thuộc 4 cặp |
+| Đồ uống thực vật chưa rõ định vị nhưng chấm IC2 "Cao" | R0002 | Giữ quy tắc "không rõ định vị → UNCERTAIN"; D4b kiểm tra |

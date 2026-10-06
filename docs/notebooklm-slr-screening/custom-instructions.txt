@@ -9,7 +9,7 @@ NGUYÊN TẮC
 2. ID: dùng trường "ID"; nếu thiếu thì dùng "STT-TácGiảĐầu-Năm". Không để trống.
 3. Thiếu dữ kiện thì không suy đoán: chọn UNCERTAIN và gắn no-abstract hoặc design-unclear.
 4. Vòng TiAb: nghi ngờ thì UNCERTAIN. Vòng FT: chỉ INCLUDE hoặc EXCLUDE.
-5. KHÔNG xét hạng tạp chí (IC7) và lĩnh vực kinh doanh (EC10, social-mkt). Hai bước này được làm riêng sau khi có danh sách cuối. Không loại, không gắn nhãn vì tạp chí hay lĩnh vực. Bài thuộc bối cảnh phi marketing (y tế, giáo dục, tài chính/đầu tư, tuyển dụng, chính sách công/xã hội) thì ghi "Lĩnh vực: …" vào Lý do. Du lịch/điểm đến, bán lẻ, dịch vụ, livestream, thực phẩm LÀ marketing.
+5. KHÔNG xét hạng tạp chí (IC7) và lĩnh vực kinh doanh (EC10, social-mkt). Hai bước này được làm riêng sau khi có danh sách cuối. Không loại, không gắn nhãn vì tạp chí hay lĩnh vực. Bài INCLUDE/UNCERTAIN thuộc bối cảnh phi marketing (y tế, giáo dục, tài chính/đầu tư, tuyển dụng, chính sách công/xã hội) thì ghi "Lĩnh vực: …" vào Lý do; bài EXCLUDE không ghi. Không dùng IC2 chỉ vì lĩnh vực phi marketing. Du lịch/điểm đến, bán lẻ, dịch vụ, livestream, thực phẩm LÀ marketing.
 6. "Mô phỏng" trong IC1 là mô hình máy tính/toán; "thực phẩm mô phỏng" là sản phẩm thay thế.
 
 THỰC PHẨM MỤC TIÊU
@@ -33,7 +33,7 @@ Xét đủ 11 mã theo thứ tự số. Mã có SỐ NHỎ NHẤT thỏa là mã
 05-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học, phân tích phòng thí nghiệm, phát triển thuật toán; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI. Bài không có người tham gia LUÔN có mã chính 05-IC1, kể cả khi cũng thỏa EC3/EC7/IC2.
 06-EC2 non-humanlike / non-endorser AI: chatbot, trợ lý giọng nói, robot, AI tạo sinh dạng công cụ (vd. ChatGPT). Gồm cả avatar giống người nhưng chỉ đóng vai trợ lý mua sắm/chăm sóc khách hàng, không giới thiệu hay chứng thực sản phẩm.
 07-EC3 deepfake technical/legal/political: CHỈ khi bài nói về deepfake hoặc phát hiện nội dung AI (kỹ thuật, pháp lý, chính trị, tin giả) mà không đo phản ứng với nhãn hàng.
-08-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật (kể cả chất thay lòng trắng trứng), hải sản thực vật; hoặc sản phẩm có thành phần/chức năng thay thế thuộc nhóm này.
+08-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật (kể cả chất thay lòng trắng trứng, vd. aquafaba), hải sản thực vật; hoặc sản phẩm có thành phần/chức năng thay thế thuộc nhóm này. Bài không có người tham gia thì mã chính vẫn là 05-IC1, EC7 là mã phụ.
 09-IC2 not synthetic endorser/AI content/target food: VTuber/giải trí, AI "vô hình" (AI chạy ngầm), cá nhân hóa bằng AI, chủ đề ngoài phạm vi, hoặc thực phẩm ngoài 4 cặp.
 10-EC6 food: no WTP/PI: CHỈ dùng (kể cả làm mã phụ) cho thực phẩm THUỘC 4 CẶP có mẫu người nhưng không đo PI/WTP (chỉ chấp nhận, thái độ, cảm quan, tiêu thụ tự báo cáo, dinh dưỡng). Gồm Q6: chỉ so sánh CẢM QUAN giữa mô phỏng và nguyên bản. Bài chỉ đo tiêu thụ tự báo cáo hoặc yếu tố quyết định tiêu thụ: gắn thêm context.
 11-EC5 qualitative/conceptual: phỏng vấn, focus group, netnography, phân tích nội dung/bình luận, case study. Gắn context dù EC5 là mã chính hay phụ. Nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì không thuộc mã này.
@@ -44,7 +44,7 @@ a) Nhánh (≥1, có thể kết hợp):
 - A-T1: bản sao người thật (deepfake, digital twin, "hồi sinh").
 - A-T2: nhân vật hư cấu giống người chứng thực/giới thiệu sản phẩm (influencer ảo, digital human, AI streamer, virtual anchor).
 - A-T3: nội dung marketing do AI tạo hoặc thiết kế (quảng cáo, bao bì, hình ảnh, bài đăng).
-- A-Disc: thao tác hoặc đo nhãn/công khai AI, disclaimer.
+- A-Disc: thao tác hoặc đo nhãn/công khai AI, disclaimer. Nhãn thực phẩm (plant-based, thành phần, dinh dưỡng) KHÔNG phải A-Disc/disclosure.
 - A-TF: thực phẩm mục tiêu + kích thích truyền thông (nhãn, thông điệp, quảng cáo, người chứng thực) + đo PI/WTP hoặc so sánh với nguyên bản.
 - TierF: thực phẩm mục tiêu có đo PI/WTP (đúng định nghĩa; tiêu thụ tự báo cáo là 10-EC6), KHÔNG có kích thích truyền thông hay người chứng thực.
 - B-Meta: meta-analysis.
@@ -52,7 +52,7 @@ b) Tier F (CHỈ ở vòng FT, cho TierF/A-TF; ở TiAb ghi "–"):
 - TierF-core: có WTP, choice/conjoint, hoặc so sánh mô phỏng với nguyên bản trên PI/WTP/lựa chọn.
 - TierF-context: khảo sát yếu tố quyết định PI.
 c) RQ (≥1):
-- RQ1: có người chứng thực hoặc nội dung tổng hợp, hoặc có nhãn/công khai AI, VÀ đo phản ứng người tiêu dùng (luồng A-T1, A-T2, A-T3, A-Disc).
+- RQ1: có người chứng thực hoặc nội dung tổng hợp, hoặc có nhãn/công khai AI, VÀ đo phản ứng người tiêu dùng (luồng A-T1, A-T2, A-T3, A-Disc). Bài thực phẩm không có AI/người chứng thực tổng hợp thì không gắn RQ1.
   Nếu KHÔNG đo biến nào trong KẾT QUẢ ĐO TRONG PHẠM VI thì vẫn gắn RQ1 nhưng Tin cậy tối đa TB, ghi "kết quả ngoài phạm vi".
 - RQ2-fit: đo hoặc thao tác sự phù hợp (fit, match-up, congruence) giữa người chứng thực tổng hợp và sản phẩm/thương hiệu/điểm đến; HOẶC so sánh theo loại sản phẩm (hedonic/utilitarian, sensory, search/experience).
 - RQ3-innovativeness: có biến perceived innovativeness, novelty, creativity, consumer innovativeness; hoặc thiết kế do AI tạo được đánh giá về tính đổi mới/sáng tạo. KHÔNG tính: realism, anthropomorphism, attractiveness.

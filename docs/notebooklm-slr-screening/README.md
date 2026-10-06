@@ -182,7 +182,7 @@ Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê 
 (j) gắn RQ3 cho realism, anthropomorphism, attractiveness;
 (k) dùng 07-EC3 cho bài không nói về deepfake/phát hiện nội dung AI;
 (l) dùng 10-EC6 cho thực phẩm ngoài 4 cặp;
-(m) bài phi marketing nhưng không ghi "Lĩnh vực: …" trong cột Lý do;
+(m) bài INCLUDE/UNCERTAIN phi marketing nhưng không ghi "Lĩnh vực: …"; hoặc bài EXCLUDE lại có ghi "Lĩnh vực: …" (phải xóa);
 (n) bài không có người tham gia (phòng thí nghiệm, thuật toán, mô hình) mà mã chính không phải 05-IC1;
 (o) dùng IC2 cho sản phẩm có thành phần/chức năng thay thế thuộc EC7 (phải là 08-EC7);
 (p) có mã số 12, nhắc tới EC10/Biz, hoặc ghi 08-IC2 / 09-EC7 (dấu hiệu instructions cũ);
@@ -190,7 +190,10 @@ Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê 
 (r) EC5 (chính hoặc phụ) mà không gắn context;
 (s) Lý do không có trích dẫn nguyên văn trong ngoặc kép;
 (t) ghi "Lĩnh vực: …" cho du lịch/điểm đến, bán lẻ, dịch vụ, livestream, thực phẩm;
-(u) dòng có số ô khác 12 (lệch cột).
+(u) dòng có số ô khác 12 (lệch cột);
+(v) gắn A-Disc/disclosure hoặc RQ1 cho nhãn thực phẩm không liên quan AI;
+(w) dùng IC2 làm mã chính chỉ vì bài thuộc lĩnh vực phi marketing.
+Chỉ sửa khi lỗi có căn cứ trong nguồn. Không tự suy ra lĩnh vực hay thông tin không có trong tóm tắt.
 Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
 ```
 
@@ -332,3 +335,20 @@ Quy tắc "bài có mã phụ thì tin cậy tối đa TB" bị bỏ: notebook k
 - **Thuộc cặp 2 (sữa thực vật – sữa).** Bài định vị sản phẩm là "plant-based beverage (PBB)". Phần dẫn nhập đặt nó trong thị trường đồ uống thực vật (đậu nành, yến mạch, hạnh nhân), nhắc tới lý do thay sữa (không dung nạp lactose, dị ứng sữa), và dùng **đồ uống đậu nành thương mại** làm đối chứng cảm quan. Sản phẩm không được gọi là yogurt hay kefir.
 - **Không đo PI/WTP.** Chỉ có thang hedonic 7 điểm (n = 94, hội đồng cảm quan không chuyên) và kiểm định xếp hạng ưa thích. Bài cũng không so sánh với sữa bò, nên không phải trường hợp Q6.
 - **Không dùng IC2.** Lần trước notebook xếp IC2 vì quy tắc cũ ghi "đồ uống lên men khác không thuộc 4 cặp". Câu này mâu thuẫn với định vị PBB và là nguyên nhân khiến kết quả đổi qua lại giữa các lượt chạy. Quy tắc đã được sửa như trên.
+
+### Pilot 5 (cùng 50 bài, bản 11 mã có quy tắc đồ uống thực vật; chạy D0 → D1 → D4b)
+
+**Mức quyết định (INCLUDE/EXCLUDE): khớp toàn bộ 50/50** với đánh giá của người hiệu chỉnh. 14 bài INCLUDE: R0003, R0004, R0009, R0012, R0016, R0018, R0023, R0025, R0026, R0027, R0029, R0033, R0035, R0042.
+
+Đã đúng: R0002 → 10-EC6; R0028 → 10-EC6 + context; R0023 bỏ PI; R0027 Cao; R0008 → EC7; R0043, R0045 không còn mã phụ EC6; Lý do có trích dẫn nguyên văn. D4b sửa đúng R0009 (thêm RQ2-fit) và R0016 (message liking là thái độ với quảng cáo, thuộc phạm vi).
+
+| Vấn đề còn lại | Ví dụ | Sửa |
+| :--- | :--- | :--- |
+| Bài phòng thí nghiệm nhưng mã chính là EC7 thay vì IC1 | R0020 | Dòng EC7 nhắc lại: không có người tham gia thì mã chính là 05-IC1 |
+| Aquafaba thay lòng trắng trứng xếp IC2 | R0024 | Thêm ví dụ "aquafaba" vào EC7 |
+| Gắn RQ1 + disclosure cho nhãn thực phẩm thực vật | R0029 | Nhãn thực phẩm không phải A-Disc; bài thực phẩm không có AI không gắn RQ1 |
+| IC2 làm mã chính vì lĩnh vực xã hội (nên là EC5) | R0006 | "Không dùng IC2 chỉ vì lĩnh vực phi marketing" |
+| D4b thêm "Lĩnh vực" cho bài EXCLUDE và **bịa lĩnh vực** | R0019 ("Y tế / Tài chính"), R0038 ("Y tế") | Chỉ ghi Lĩnh vực cho INCLUDE/UNCERTAIN; D4b không được tự suy ra thông tin |
+| D4b bỏ sót lỗi | R0020, R0024, R0029 | Thêm mục (v), (w); nhắc lại (n), (o) |
+
+**Khuyến nghị:** sai sót còn lại chỉ nằm ở mã phụ/nhãn, không ảnh hưởng quyết định chọn/loại. Nên **chốt (freeze) instructions** sau bản này và chuyển sang các lô tiếp theo. Không sửa instructions giữa các lô, để mọi bài được sàng lọc bằng cùng một bộ quy tắc. Người kiểm tra đọc lại 100% bài INCLUDE và khoảng 10–20% bài EXCLUDE chọn ngẫu nhiên.

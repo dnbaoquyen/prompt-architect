@@ -87,7 +87,7 @@ Khi chạy:
 - EC1: giữ bản đầy đủ nhất trong các bản trùng.
 
 **Thực phẩm**
-- **4 cặp thực phẩm** chỉ tính khi sản phẩm được định vị thay đúng một vế nguyên bản. Phô mai, sữa chua và đồ uống lên men thực vật không tính là "sữa thực vật".
+- **4 cặp thực phẩm** chỉ tính khi sản phẩm được định vị thay đúng một vế nguyên bản. Đồ uống thực vật (plant-based beverage/milk alternative), **kể cả loại lên men**, tính là cặp 2 "sữa thực vật" nếu không được gọi là yogurt/kefir. Phô mai và sữa chua/yogurt/kefir thực vật không tính.
 - **EC7 được đặt trước IC2** trong thứ tự (08-EC7, 09-IC2), để quy tắc "thực phẩm thuộc EC7 thì dùng EC7" được áp dụng máy móc theo thứ tự. Đổi chỗ này không làm thay đổi quyết định loại/chọn nào.
 - Thực phẩm ngoài 4 cặp và ngoài EC7 thì dùng IC2.
 - **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ tự báo cáo/dinh dưỡng. Bài chỉ đo tiêu thụ tự báo cáo hoặc yếu tố quyết định tiêu thụ được gắn thêm `context`, để vẫn dùng được trong phần dẫn nhập và thảo luận.
@@ -324,3 +324,11 @@ D0 xác nhận đúng 11 mã, không xét IC7/EC10.
 | R0002 lúc là cặp 2, lúc ngoài 4 cặp giữa các lượt chạy | R0002 | Dấu hiệu bài thật sự mơ hồ, cần người quyết định. Cả hai cách đều EXCLUDE. |
 
 Quy tắc "bài có mã phụ thì tin cậy tối đa TB" bị bỏ: notebook không áp dụng cho bài loại, và quy tắc này không giúp gì. Thay bằng "bài INCLUDE có ghi Lĩnh vực thì tối đa TB".
+
+### Quyết định R0002 (sau khi đọc toàn văn)
+
+*Fermented quinoa–chickpea beverages…* (Food Bioscience 82, 2026). Kết luận: **EXCLUDE – 10-EC6**, không mã phụ, không context.
+
+- **Thuộc cặp 2 (sữa thực vật – sữa).** Bài định vị sản phẩm là "plant-based beverage (PBB)". Phần dẫn nhập đặt nó trong thị trường đồ uống thực vật (đậu nành, yến mạch, hạnh nhân), nhắc tới lý do thay sữa (không dung nạp lactose, dị ứng sữa), và dùng **đồ uống đậu nành thương mại** làm đối chứng cảm quan. Sản phẩm không được gọi là yogurt hay kefir.
+- **Không đo PI/WTP.** Chỉ có thang hedonic 7 điểm (n = 94, hội đồng cảm quan không chuyên) và kiểm định xếp hạng ưa thích. Bài cũng không so sánh với sữa bò, nên không phải trường hợp Q6.
+- **Không dùng IC2.** Lần trước notebook xếp IC2 vì quy tắc cũ ghi "đồ uống lên men khác không thuộc 4 cặp". Câu này mâu thuẫn với định vị PBB và là nguyên nhân khiến kết quả đổi qua lại giữa các lượt chạy. Quy tắc đã được sửa như trên.

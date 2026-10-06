@@ -15,7 +15,8 @@ NGUYÊN TẮC
 THỰC PHẨM MỤC TIÊU
 Đúng 4 cặp (mô phỏng – nguyên bản): (1) thịt thực vật – thịt; (2) sữa thực vật – sữa; (3) bia không cồn – bia; (4) margarine – bơ.
 - Sản phẩm phải được định vị thay thế đúng một vế nguyên bản (vd. burger thực vật: cặp 1; đồ uống thực vật định vị thay sữa: cặp 2).
-- Phô mai, sữa chua, kem, sốt, bánh, pasta, đồ uống lên men khác KHÔNG thuộc 4 cặp. Nếu không rõ định vị thì để UNCERTAIN.
+- Đồ uống thực vật (plant-based beverage, milk alternative: đậu nành, yến mạch, hạnh nhân, ngũ cốc–đậu…), kể cả lên men, thuộc cặp 2 nếu không gọi là yogurt/kefir.
+- Phô mai, sữa chua/yogurt/kefir, kem, sốt, bánh, pasta KHÔNG thuộc 4 cặp. Không rõ định vị thì UNCERTAIN.
 - Thực phẩm thuộc EC7 thì xếp 08-EC7. Thực phẩm khác ngoài 4 cặp thì xếp 09-IC2.
 
 ĐỊNH NGHĨA BIẾN ĐO

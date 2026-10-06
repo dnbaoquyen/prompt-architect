@@ -12,7 +12,7 @@ NotebookLM **không xét hạng tạp chí và lĩnh vực kinh doanh**. IC7, EC
 Bộ tài liệu gồm:
 
 1. Hướng dẫn chuẩn bị nguồn và cấu hình notebook (mục A–C).
-2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.250 ký tự (giới hạn của NotebookLM là 10.000).
+2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 9.550 ký tự (giới hạn của NotebookLM là 10.000).
 3. Các prompt chạy từng lượt (mục D).
 4. Bước lọc tạp chí cuối cùng (mục E).
 
@@ -81,14 +81,14 @@ Khi chạy:
 ### Các giả định trong instructions (sửa nếu không đúng ý bạn)
 
 **Quy trình và thứ tự mã**
-- Thứ tự xét loại theo danh sách gốc, **bỏ IC7 và EC10** (chuyển xuống bước cuối). Còn lại 11 mã, đánh số `01–11`; mã có số nhỏ nhất thỏa là **mã loại chính**.
-- Bài thuộc bối cảnh phi marketing được ghi "Lĩnh vực: …" trong cột Lý do, để đối chiếu với cờ Biz ở bước cuối.
+- Thứ tự xét loại theo danh sách gốc, **bỏ IC7 và EC10** (chuyển xuống bước cuối), **đổi chỗ EC7 lên trước IC2**. Còn lại 11 mã, đánh số `01–11`; mã có số nhỏ nhất thỏa là **mã loại chính**.
+- Bài thuộc bối cảnh phi marketing (y tế, giáo dục, tài chính/đầu tư, tuyển dụng, chính sách công/xã hội) được ghi "Lĩnh vực: …" trong cột Lý do, để đối chiếu với cờ Biz ở bước cuối. Du lịch/điểm đến, bán lẻ, dịch vụ, livestream và thực phẩm được coi là marketing.
 - Thêm quyết định **UNCERTAIN** cho vòng TiAb (nghi ngờ thì giữ).
 - EC1: giữ bản đầy đủ nhất trong các bản trùng.
 
 **Thực phẩm**
 - **4 cặp thực phẩm** chỉ tính khi sản phẩm được định vị thay đúng một vế nguyên bản. Phô mai, sữa chua và đồ uống lên men thực vật không tính là "sữa thực vật".
-- Thực phẩm thuộc danh sách EC7 thì dùng EC7, không dùng IC2.
+- **EC7 được đặt trước IC2** trong thứ tự (08-EC7, 09-IC2), để quy tắc "thực phẩm thuộc EC7 thì dùng EC7" được áp dụng máy móc theo thứ tự. Đổi chỗ này không làm thay đổi quyết định loại/chọn nào.
 - Thực phẩm ngoài 4 cặp và ngoài EC7 thì dùng IC2.
 - **EC6** gồm cả bài thực phẩm chỉ đo tiêu thụ tự báo cáo/dinh dưỡng. Bài chỉ đo tiêu thụ tự báo cáo hoặc yếu tố quyết định tiêu thụ được gắn thêm `context`, để vẫn dùng được trong phần dẫn nhập và thảo luận.
 - **TierF-core** "so sánh với nguyên bản" chỉ tính khi so sánh trên PI/WTP/lựa chọn. So sánh chỉ về cảm quan thì thuộc EC6 (Q6).
@@ -116,7 +116,7 @@ Khi chạy:
 Trước khi sàng lọc, hãy tóm tắt lại bằng 1 bảng: thứ tự 11 mã loại (01–11), điều kiện đặc biệt của EC9, EC5, EC6, sự khác nhau giữa A-TF và TierF, và 4 cặp thực phẩm mục tiêu. Xác nhận bạn có xét hạng tạp chí và lĩnh vực kinh doanh (EC10) hay không. Không sàng lọc bài nào.
 ```
 
-Kết quả đúng phải liệt kê **11 mã, từ 01-Retracted đến 11-EC5**, với **05-IC1** và **10-EC6**. Nếu thấy 12 mã, thấy EC10, hoặc thấy notebook nói có xét hạng tạp chí, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
+Kết quả đúng phải liệt kê **11 mã, từ 01-Retracted đến 11-EC5**, với **05-IC1**, **08-EC7**, **09-IC2** và **10-EC6**. Nếu thấy 12 mã, thấy EC10, hoặc thấy notebook nói có xét hạng tạp chí, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
 
 ### D1. Sàng lọc vòng tiêu đề–tóm tắt
 
@@ -184,8 +184,13 @@ Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê 
 (l) dùng 10-EC6 cho thực phẩm ngoài 4 cặp;
 (m) bài phi marketing nhưng không ghi "Lĩnh vực: …" trong cột Lý do;
 (n) bài không có người tham gia (phòng thí nghiệm, thuật toán, mô hình) mà mã chính không phải 05-IC1;
-(o) dùng IC2 cho sản phẩm có thành phần/chức năng thay thế thuộc EC7 (phải là 09-EC7);
-(p) có mã số 12 hoặc nhắc tới EC10/Biz (dấu hiệu instructions cũ).
+(o) dùng IC2 cho sản phẩm có thành phần/chức năng thay thế thuộc EC7 (phải là 08-EC7);
+(p) có mã số 12, nhắc tới EC10/Biz, hoặc ghi 08-IC2 / 09-EC7 (dấu hiệu instructions cũ);
+(q) gắn PI cho "acceptance intention" hoặc ý định sử dụng;
+(r) EC5 (chính hoặc phụ) mà không gắn context;
+(s) Lý do không có trích dẫn nguyên văn trong ngoặc kép;
+(t) ghi "Lĩnh vực: …" cho du lịch/điểm đến, bán lẻ, dịch vụ, livestream, thực phẩm;
+(u) dòng có số ô khác 12 (lệch cột).
 Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
 ```
 
@@ -299,3 +304,23 @@ Dấu hiệu dùng bản cũ: mã đánh số `01–12` (06-IC1, 12-EC5), và v�
 | Sản phẩm ngoài 4 cặp có thành phần thuộc EC7 được xếp IC2 | R0008 (pasta có côn trùng/tảo), R0024 (aquafaba thay lòng trắng trứng) | EC7 áp dụng khi thành phần chính hoặc chức năng thay thế thuộc EC7; thêm D4b (o) |
 | Chưa gắn context cho EC6 chỉ đo tiêu thụ | R0028 | Đã có trong bản mới, do notebook chạy bản cũ |
 | Chưa ghi "Lĩnh vực: …" | R0004, R0016 | Đã có trong bản mới, do notebook chạy bản cũ |
+
+### Pilot 4 (cùng 50 bài, instructions bản 11 mã, lần đầu chạy đúng bản)
+
+D0 xác nhận đúng 11 mã, không xét IC7/EC10.
+
+Đã đúng: R0020, R0037 → 05-IC1; R0016 bỏ PI và có "Lĩnh vực: y tế"; R0004 có "Lĩnh vực: tài chính"; R0032 → EC6 + context; R0017 → EC2.
+
+| Vấn đề còn lại | Ví dụ | Sửa |
+| :--- | :--- | :--- |
+| **Thụt lùi**: lại INCLUDE TierF + PI cho bài chỉ đo tiêu thụ tự báo cáo | R0028 | PI loại trừ có ví dụ cụ thể ("x% respondents currently consume…"); TierF nêu rõ tiêu thụ tự báo cáo là 10-EC6 |
+| **Thụt lùi**: gắn PI cho acceptance intention, Tin cậy Cao | R0023 | Thêm "acceptance intention" vào danh sách KHÔNG là PI; D4b (q) |
+| Vẫn xếp IC2 dù quy tắc ngoại lệ yêu cầu EC7 | R0008, R0024 | Đổi thứ tự: 08-EC7 trước 09-IC2 (bỏ ngoại lệ, dùng thứ tự) |
+| Gắn EC6 làm mã phụ cho thực phẩm ngoài 4 cặp | R0002, R0043, R0045 | EC6 "CHỈ dùng, kể cả làm mã phụ, cho 4 cặp" |
+| Coi du lịch là phi marketing, hạ tin cậy | R0027 | Nêu rõ du lịch/điểm đến, bán lẻ, dịch vụ, livestream, thực phẩm là marketing |
+| Lý do không còn trích dẫn nguyên văn | toàn bộ lô | Bắt buộc một trích dẫn tiếng Anh ngắn trong ngoặc kép |
+| EC5 làm mã phụ nhưng không gắn context (không nhất quán) | R0040, R0046, R0047 | "Gắn context dù EC5 là mã chính hay phụ" |
+| Lệch cột (13 ô) | R0049 | D4b (u) |
+| R0002 lúc là cặp 2, lúc ngoài 4 cặp giữa các lượt chạy | R0002 | Dấu hiệu bài thật sự mơ hồ, cần người quyết định. Cả hai cách đều EXCLUDE. |
+
+Quy tắc "bài có mã phụ thì tin cậy tối đa TB" bị bỏ: notebook không áp dụng cho bài loại, và quy tắc này không giúp gì. Thay bằng "bài INCLUDE có ghi Lĩnh vực thì tối đa TB".

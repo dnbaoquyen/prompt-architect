@@ -20,7 +20,7 @@ THỰC PHẨM MỤC TIÊU
 
 ĐỊNH NGHĨA BIẾN ĐO
 - PI: ý định MUA/chọn sản phẩm; hoặc dữ liệu mua/chọn KHÁCH QUAN (lựa chọn trong thực nghiệm, lựa chọn có khuyến khích, scanner, dữ liệu bán hàng; gắn thêm obs-data nếu là dữ liệu thị trường).
-- KHÔNG là PI: ý định tiếp tục dùng, chấp nhận, tiếp nhận thông tin, engagement, ý định du lịch/tham gia; mức tiêu thụ TỰ BÁO CÁO, tần suất ăn, khẩu phần.
+- KHÔNG là PI: ý định tiếp tục dùng, ý định sử dụng chương trình/dịch vụ, chấp nhận, tiếp nhận thông tin, engagement, ý định du lịch/tham gia; mức tiêu thụ TỰ BÁO CÁO, tần suất ăn, khẩu phần.
 - WTP: mức giá sẵn sàng trả, đấu giá, choice/conjoint có thuộc tính giá.
 
 BƯỚC 1 – XÉT LOẠI (thứ tự bắt buộc)
@@ -29,11 +29,11 @@ Xét đủ 11 mã theo thứ tự số. Mã có SỐ NHỎ NHẤT thỏa là mã
 02-IC5 not journal article: chương sách, bài hội nghị, xã luận, errata.
 03-EC1 duplicate: trùng DOI hoặc cùng dữ liệu. Giữ bản đầy đủ nhất, ghi ID bản được giữ.
 04-EC9 review/secondary: tổng quan, scoping, bibliometric, research agenda. Meta-analysis không thuộc mã này (gắn B-Meta). Luôn gắn snowball.
-05-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI.
+05-IC1 no human consumer sample: mô hình, mô phỏng, lý thuyết trò chơi, bài khái niệm/triết học, phân tích phòng thí nghiệm, phát triển thuật toán; hoặc mẫu chỉ là nhà quản lý, nhân viên, nhà sản xuất, chuyên gia; hoặc chỉ phân tích đầu ra của AI. Bài không có người tham gia LUÔN có mã chính 05-IC1, kể cả khi cũng thỏa EC3/EC7/IC2.
 06-EC2 non-humanlike / non-endorser AI: chatbot, trợ lý giọng nói, robot, AI tạo sinh dạng công cụ (vd. ChatGPT). Gồm cả avatar giống người nhưng chỉ đóng vai trợ lý mua sắm/chăm sóc khách hàng, không giới thiệu hay chứng thực sản phẩm.
 07-EC3 deepfake technical/legal/political: CHỈ khi bài nói về deepfake hoặc phát hiện nội dung AI (kỹ thuật, pháp lý, chính trị, tin giả) mà không đo phản ứng với nhãn hàng.
 08-IC2 not synthetic endorser/AI content/target food: VTuber/giải trí, AI "vô hình" (AI chạy ngầm), cá nhân hóa bằng AI, chủ đề ngoài phạm vi, hoặc thực phẩm ngoài 4 cặp mà KHÔNG thuộc danh sách EC7 (thực phẩm thuộc EC7 không dùng IC2).
-09-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật, hải sản thực vật.
+09-EC7 non-target food: thịt nuôi cấy, côn trùng, tảo, nấm, trứng thực vật (kể cả chất thay lòng trắng trứng), hải sản thực vật. Sản phẩm có thành phần chính hoặc chức năng thay thế thuộc nhóm này thì dùng EC7, không dùng IC2.
 10-EC6 food: no WTP/PI: bài về thực phẩm THUỘC 4 CẶP có mẫu người nhưng không đo PI/WTP (chỉ chấp nhận, thái độ, cảm quan, tiêu thụ tự báo cáo, dinh dưỡng). Gồm Q6: chỉ so sánh CẢM QUAN giữa mô phỏng và nguyên bản. Bài chỉ đo tiêu thụ tự báo cáo hoặc yếu tố quyết định tiêu thụ: gắn thêm context.
 11-EC5 qualitative/conceptual: phỏng vấn, focus group, netnography, phân tích nội dung/bình luận, case study. Luôn gắn context. Nghiên cứu hỗn hợp có phần định lượng trên người tiêu dùng thì không thuộc mã này.
 Tự kiểm tra trước khi xuất bảng: số của mã chính phải nhỏ hơn số của mọi mã phụ.

@@ -62,7 +62,8 @@ Custom instructions áp dụng cho cả notebook, nên **tạo 2 notebook riêng
 2. Ở **Conversational goal / Define your conversational style**, chọn **Custom**.
 3. Dán toàn bộ nội dung [`custom-instructions.txt`](custom-instructions.txt) vào ô Custom.
 4. Ở **Response length**, chọn **Longer** để bảng nhiều dòng không bị cắt.
-5. Bấm **Save**, mở chat mới, rồi chạy **D0** để kiểm tra instructions không bị cắt.
+5. Bấm **Save**. **Xóa lịch sử chat** (menu ⋮ của khung Chat → *Delete chat history*), để notebook không bắt chước định dạng của các bảng cũ. Sau đó chạy **D0** để kiểm tra.
+   - Mỗi lần cập nhật instructions: xóa hết nội dung cũ trong ô Custom rồi mới dán bản mới, không dán nối tiếp.
 
 Khi chạy:
 
@@ -115,7 +116,7 @@ Khi chạy:
 Trước khi sàng lọc, hãy tóm tắt lại bằng 1 bảng: thứ tự 11 mã loại (01–11), điều kiện đặc biệt của EC9, EC5, EC6, sự khác nhau giữa A-TF và TierF, và 4 cặp thực phẩm mục tiêu. Xác nhận bạn có xét hạng tạp chí và lĩnh vực kinh doanh (EC10) hay không. Không sàng lọc bài nào.
 ```
 
-Nếu tóm tắt sai, thiếu, hoặc nói có xét hạng tạp chí/EC10, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
+Kết quả đúng phải liệt kê **11 mã, từ 01-Retracted đến 11-EC5**, với **05-IC1** và **10-EC6**. Nếu thấy 12 mã, thấy EC10, hoặc thấy notebook nói có xét hạng tạp chí, nghĩa là custom instructions chưa được lưu hoặc bị cắt.
 
 ### D1. Sàng lọc vòng tiêu đề–tóm tắt
 
@@ -181,7 +182,10 @@ Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Liệt kê 
 (j) gắn RQ3 cho realism, anthropomorphism, attractiveness;
 (k) dùng 07-EC3 cho bài không nói về deepfake/phát hiện nội dung AI;
 (l) dùng 10-EC6 cho thực phẩm ngoài 4 cặp;
-(m) bài phi marketing nhưng không ghi "Lĩnh vực: …" trong cột Lý do.
+(m) bài phi marketing nhưng không ghi "Lĩnh vực: …" trong cột Lý do;
+(n) bài không có người tham gia (phòng thí nghiệm, thuật toán, mô hình) mà mã chính không phải 05-IC1;
+(o) dùng IC2 cho sản phẩm có thành phần/chức năng thay thế thuộc EC7 (phải là 09-EC7);
+(p) có mã số 12 hoặc nhắc tới EC10/Biz (dấu hiệu instructions cũ).
 Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ chỉ cho các dòng đã sửa.
 ```
 
@@ -281,3 +285,17 @@ Người dùng đổi cột tiêu đề thành **Tiêu đề gốc** (đã cập
 
 - **Mức tiêu thụ tự báo cáo** (R0028): loại theo **EC6**, gắn `context`. Dữ liệu mua/chọn khách quan vẫn tính là PI.
 - **EC10**: giữ trong đề cương, nhưng chuyển khỏi NotebookLM xuống bước cuối. Cờ Biz suy từ lĩnh vực tạp chí (SJR Areas/Categories, ABDC), và Food Science được xếp `?`. Các mã còn lại được đánh số lại `01–11`.
+
+### Pilot 3 (cùng 50 bài; notebook vẫn chạy bản instructions trước khi bỏ EC10)
+
+Dấu hiệu dùng bản cũ: mã đánh số `01–12` (06-IC1, 12-EC5), và vẫn có mục "DỮ LIỆU THIẾU… EC10".
+
+Đã đúng: R0028 → EC6; R0001 bỏ EC3; R0035 bỏ RQ3; R0025, R0026, R0027 được coi là "trong phạm vi" (authenticity, source credibility, trust).
+
+| Vấn đề còn lại | Ví dụ | Sửa |
+| :--- | :--- | :--- |
+| Nhảy thẳng sang mã chủ đề, bỏ qua IC1 dù không có người tham gia | R0020 (phòng thí nghiệm, ghi EC7), R0037 (thuật toán, ghi EC3) | IC1 nêu rõ phòng thí nghiệm/thuật toán; bài không có người tham gia luôn có mã chính IC1; thêm D4b (n) |
+| Gắn PI cho "ý định sử dụng chương trình" | R0016 | Thêm "ý định sử dụng chương trình/dịch vụ" vào danh sách KHÔNG là PI |
+| Sản phẩm ngoài 4 cặp có thành phần thuộc EC7 được xếp IC2 | R0008 (pasta có côn trùng/tảo), R0024 (aquafaba thay lòng trắng trứng) | EC7 áp dụng khi thành phần chính hoặc chức năng thay thế thuộc EC7; thêm D4b (o) |
+| Chưa gắn context cho EC6 chỉ đo tiêu thụ | R0028 | Đã có trong bản mới, do notebook chạy bản cũ |
+| Chưa ghi "Lĩnh vực: …" | R0004, R0016 | Đã có trong bản mới, do notebook chạy bản cũ |

@@ -1,5 +1,5 @@
 # GHI NHỚ TIẾN TRÌNH SLR – SÀNG LỌC BẰNG NOTEBOOKLM
-*Cập nhật: 07/10/2026. Trạng thái: đã hiệu chỉnh qua 5 lượt chạy thử, đề xuất chốt instructions.*
+*Cập nhật: 08/10/2026. Trạng thái: chuẩn bị **sàng lọc lại 209 bài** theo hướng dẫn 5 bước (mục 10). Mục 10 có hiệu lực cao hơn các mục trước nếu khác nhau.*
 
 > Dùng ghi nhớ này làm bối cảnh cho các phiên tiếp theo. Các quyết định dưới đây **đã được chốt**, không cần bàn lại trừ khi tôi yêu cầu.
 
@@ -220,3 +220,45 @@ python3 tools/rank_journals.py --records danh_sach_cuoi.csv --sjr scimagojr_2025
 - `README.md` (hướng dẫn, các prompt D0–D5, nhật ký hiệu chỉnh)
 - `tools/make_batches.py`
 - `tools/rank_journals.py`
+
+---
+
+## 10. Sàng lọc lại 209 bài theo hướng dẫn 5 bước (08/10/2026)
+
+**Bối cảnh.** Lần trước giữ 155/209 bài, trong đó 61 bài là TierF. Ba người sàng lọc hiểu khác nhau ở một số điểm. Lần này **không có tiêu chí mới**, chỉ áp chặt bộ quy tắc trên theo trình tự 5 bước. `custom-instructions.txt` đã được viết lại theo trình tự này (khoảng 6.900 ký tự, bảng 13 cột có thêm cột "Bước"). Prompt ở mục F của README: R0 kiểm tra cấu hình, R1 sàng lọc, R2 rà lỗi, R3 kiểm chứng, R4 tổng hợp.
+
+**Trình tự 5 bước:**
+1. **Loại hình thức** (01–04): bị rút, chương sách, bài hội nghị/kỷ yếu, bản trùng, tổng quan.
+2. **Không có mẫu người tiêu dùng** → 05-IC1. Mã 05 luôn đứng trước 06–11.
+3. **Nhánh AI**, hỏi theo thứ tự:
+   - 3a. AI là người chứng thực hoặc nội dung marketing? Nếu là công cụ, chatbot, agent dịch vụ, avatar tư vấn mua sắm → 06-EC2.
+   - 3b. Có đo phản ứng với thương hiệu/sản phẩm/thông điệp? Nếu chỉ nhận diện deepfake, tin giả, chính trị → 07-EC3.
+   - 3c. Là người ảo giải trí (VTuber, idol), AI cá nhân hóa/gợi ý, hoặc lạc chủ đề? → 09-IC2.
+   - 3d. Có dữ liệu định lượng từ người tham gia? Nếu không → 11-EC5 + context.
+   - Qua cả 4 câu → **INCLUDE + RQ1, không bắt buộc PI/WTP**. Lĩnh vực phi marketing vẫn INCLUDE, ghi "Lĩnh vực: …".
+4. **Nhánh thực phẩm:**
+   - 4a. Thuộc 4 cặp?
+     - Phô mai, sữa chua, kem, **trứng thực vật, hải sản thực vật**, hybrid meat, đồ uống/bánh nói chung → **09-IC2**.
+     - Chỉ côn trùng, thịt nuôi cấy, tảo, nấm → 08-EC7.
+     - So sánh nhiều nguồn protein, có lựa chọn thực vật thuộc 4 cặp được đo PI/WTP riêng → UNCERTAIN.
+   - 4b. Có PI/WTP hẹp? Không tính: acceptance, **willingness to try**, **intention to consume** chung chung, thái độ, ưa thích cảm quan, tiêu thụ tự báo cáo. Không có → 10-EC6 (+ context nếu là tiêu thụ tự báo cáo).
+   - 4c. Có kích thích truyền thông? Có + PI/WTP → A-TF. Không có + PI/WTP → TierF. Cả hai gắn RQ4.
+5. **Tóm tắt không đủ** → UNCERTAIN, ghi "Cần kiểm: …" ở cột Ghi chú. Không dùng UNCERTAIN khi tóm tắt đã rõ chỉ đo acceptance/liking.
+
+**Điểm thay đổi so với mục 3 và mục 5:** trứng thực vật (kể cả chất thay lòng trắng trứng như aquafaba) và hải sản thực vật chuyển từ 08-EC7 sang **09-IC2**. Quyết định vẫn là EXCLUDE, chỉ đổi mã loại chính.
+
+**Ba chỗ hay nhầm:**
+- Intention to consume / willingness to try **không** phải PI → 10-EC6.
+- Sữa chua, phô mai, kem thực vật **không** thuộc cặp sữa → 09-IC2.
+- Avatar/chatbot tư vấn mua sắm là công cụ → 06-EC2.
+
+**Giả định cần xác nhận:**
+- Đồ uống thực vật định vị thay sữa (kể cả loại lên men) vẫn thuộc cặp 2, như quyết định R0002. "Đồ uống nói chung" được hiểu là đồ uống không định vị thay sữa.
+- Bài vừa có AI vừa có thực phẩm 4 cặp: áp Bước 3, đạt thì INCLUDE và gắn thêm RQ4-food. Chỉ gắn A-TF khi có PI/WTP.
+
+**Cách làm:**
+- Dùng notebook mới.
+- Sàng lọc **mù**, không đưa quyết định cũ vào nguồn.
+- 11 lô × 20 bài, mỗi lô chạy R1 rồi R2.
+- Đối chiếu với kết quả cũ và với hai người sàng lọc còn lại bằng bảng tính.
+- Người kiểm tra đọc mọi bài có quyết định thay đổi, mọi bài UNCERTAIN, và mọi bài TierF/A-TF.

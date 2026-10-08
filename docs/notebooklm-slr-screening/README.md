@@ -12,7 +12,7 @@ NotebookLM **không xét hạng tạp chí và lĩnh vực kinh doanh**. IC7, EC
 Bộ tài liệu gồm:
 
 1. Hướng dẫn chuẩn bị nguồn và cấu hình notebook (mục A–C).
-2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 7.800 ký tự (giới hạn của NotebookLM là 10.000). Đếm bằng `python3 -c "print(len(open('custom-instructions.txt',encoding='utf-8').read()))"`; không dùng `wc -m` vì lệnh này có thể đếm byte với tiếng Việt.
+2. Custom instructions để dán vào Settings: [`custom-instructions.txt`](custom-instructions.txt), khoảng 6.900 ký tự, bản sàng lọc lại theo 5 bước (giới hạn của NotebookLM là 10.000). Đếm bằng `python3 -c "print(len(open('custom-instructions.txt',encoding='utf-8').read()))"`; không dùng `wc -m` vì lệnh này có thể đếm byte với tiếng Việt.
 3. Các prompt chạy từng lượt (mục D).
 4. Bước lọc tạp chí cuối cùng (mục E).
 
@@ -109,6 +109,8 @@ Khi chạy:
 ---
 
 ## D. Prompt chạy từng lượt
+
+> **Đang sàng lọc lại 209 bài?** Dùng các prompt ở **mục F** (bảng 13 cột, có cột Bước). Các prompt D0–D5 bên dưới viết cho bản instructions 12 cột trước đây; D2–D5 vẫn dùng được.
 
 ### D0. Kiểm tra cấu hình (chạy 1 lần khi mở notebook)
 
@@ -256,7 +258,114 @@ Ghi chú:
 
 ---
 
-## F. Nhật ký hiệu chỉnh
+## F. Sàng lọc lại 209 bài (theo hướng dẫn 5 bước)
+
+**Bối cảnh.** Lần sàng lọc trước giữ 155/209 bài, trong đó 61 bài là TierF. Ba người sàng lọc hiểu khác nhau ở một số điểm. Lần này **không có tiêu chí mới**: dùng đúng bộ quy tắc trong ghi nhớ, nhưng áp chặt theo trình tự 5 bước. [`custom-instructions.txt`](custom-instructions.txt) đã được viết lại theo trình tự này (khoảng 6.900 ký tự).
+
+**Thay đổi so với bản instructions sau Pilot 5**
+
+| Điểm | Trước | Nay (theo hướng dẫn 5 bước) |
+| :--- | :--- | :--- |
+| Cấu trúc | Danh sách 11 mã | Cây quyết định 5 bước; thêm cột **Bước** (bước dừng) |
+| Trứng thực vật (kể cả chất thay lòng trắng trứng), hải sản thực vật | 08-EC7 | **09-IC2**. EC7 chỉ còn côn trùng, thịt nuôi cấy, tảo, nấm. |
+| Hybrid meat, thức ăn thú cưng, đồ uống không định vị thay sữa | Chưa nêu rõ | 09-IC2 |
+| Willingness to try, intention to consume/eat | Chưa nêu rõ | Không phải PI → 10-EC6 |
+| So sánh nhiều nguồn protein, có lựa chọn thực vật 4 cặp được đo PI/WTP riêng | Chưa có quy tắc | UNCERTAIN |
+| Bài nhánh AI | INCLUDE nếu đạt; tin cậy theo phạm vi kết quả | Qua 4 câu hỏi 3a–3d là INCLUDE + RQ1; **không bắt buộc PI/WTP** |
+| AI cá nhân hóa/gợi ý, idol ảo | 09-IC2 | Giữ nguyên, nêu rõ trong câu 3c |
+| UNCERTAIN | Ghi lý do ở cột Lý do | Ghi **"Cần kiểm: …"** ở cột Ghi chú xử lý. Không dùng khi tóm tắt đã rõ chỉ đo acceptance/liking. |
+
+**Giả định của người soạn (cần xác nhận):**
+- **Đồ uống thực vật định vị thay sữa** (kể cả loại lên men, không gọi là yogurt/kefir) vẫn thuộc cặp 2, như quyết định R0002. Cụm "đồ uống nói chung" trong hướng dẫn được hiểu là đồ uống **không** định vị thay sữa.
+- **Bài vừa có AI vừa có thực phẩm 4 cặp:** áp Bước 3; đạt thì INCLUDE và gắn thêm RQ4-food. Chỉ gắn A-TF khi có PI/WTP.
+
+### Quy trình
+
+1. Tạo **notebook mới** cho lần sàng lọc lại, dán instructions mới vào Settings (Custom, Longer). Không dùng lại notebook cũ, vì lịch sử chat cũ sẽ làm notebook bắt chước bảng 12 cột.
+2. Chia 209 bài thành 11 lô 20 bài bằng `tools/make_batches.py`, giữ nguyên ID cũ.
+3. **Sàng lọc mù:** không đưa quyết định cũ vào nguồn. Nếu file có cột quyết định cũ, xóa cột đó trước khi chạy `make_batches.py`. Đối chiếu với kết quả cũ sau, bằng bảng tính.
+4. Mỗi lô: chạy R1, rồi R2. Dán bảng đã sửa vào Google Sheets.
+5. Sau 11 lô: đối chiếu với kết quả cũ (R4 hoặc bảng tính) và với hai người sàng lọc còn lại. Người kiểm tra đọc mọi bài có quyết định thay đổi, mọi bài UNCERTAIN, và mọi bài TierF/A-TF.
+
+### R0. Kiểm tra cấu hình
+
+```
+Trước khi sàng lọc, tóm tắt bằng 1 bảng: 5 bước của quy trình và các mã tương ứng; 4 câu hỏi 3a–3d; cách xếp các loại thực phẩm vào 4 cặp / 08-EC7 / 09-IC2; định nghĩa PI và WTP hẹp, và những gì KHÔNG tính; ba chỗ hay nhầm; định dạng 13 cột. Xác nhận có xét hạng tạp chí/EC10 hay không. Không sàng lọc bài nào.
+```
+
+Kết quả đúng phải có:
+- **5 bước**, bảng **13 cột** có cột "Bước";
+- trứng thực vật và hải sản thực vật xếp **09-IC2**;
+- willingness to try **không** là PI;
+- xác nhận **không** xét IC7/EC10.
+
+### R1. Sàng lọc lại một lô
+
+```
+SÀNG LỌC LẠI – VÒNG TIÊU ĐỀ–TÓM TẮT
+Nguồn: [Batch_01_ID001-020] (tất cả bài trong nguồn này).
+
+Với TỪNG bài, đi đúng 5 bước theo thứ tự trong hướng dẫn và dừng ở bước đầu tiên dẫn tới EXCLUDE:
+1. Loại hình thức (01–04)?
+2. Có mẫu người tiêu dùng? Không → 05-IC1.
+3. Nhánh AI: hỏi 3a → 3b → 3c → 3d. Qua cả 4 câu → INCLUDE + RQ1, không cần PI/WTP.
+4. Nhánh thực phẩm: 4a (thuộc 4 cặp?) → 4b (PI/WTP hẹp?) → 4c (có kích thích truyền thông?).
+5. Tóm tắt không đủ → UNCERTAIN + "Cần kiểm: …".
+Lưu ý:
+- Áp chặt ba chỗ hay nhầm. Không dùng UNCERTAIN khi tóm tắt đã rõ chỉ đo acceptance/liking/willingness to try.
+- Không xét hạng tạp chí, không dùng EC10.
+- Xuất bảng 13 cột, ghi bước dừng vào cột "Bước".
+```
+
+### R2. Rà lỗi bảng vừa xuất (chạy ngay sau R1)
+
+```
+Rà lại bảng vừa xuất, KHÔNG sàng lọc lại từ đầu. Chỉ sửa khi có căn cứ trong nguồn; không tự suy ra thông tin không có trong tóm tắt. Liệt kê và sửa các dòng vi phạm:
+(a) mã phụ có số nhỏ hơn mã chính, hoặc cột "Bước" không khớp với mã chính (01–04 = Bước 1; 05 = Bước 2; 06, 07, 09, 11 ở nhánh AI = Bước 3; 08, 09, 10 ở nhánh thực phẩm = Bước 4);
+(b) bài không có người tham gia mà mã chính không phải 05-IC1;
+(c) "willingness to try", "intention to consume/eat", acceptance, liking, thái độ hoặc tiêu thụ tự báo cáo bị coi là PI, hoặc bài chỉ đo các biến này mà lại INCLUDE TierF/A-TF (phải là 10-EC6);
+(d) phô mai, sữa chua, kem, trứng thực vật, hải sản thực vật, hybrid meat, bánh, pasta, sốt bị xếp vào 4 cặp hoặc 08-EC7 (phải là 09-IC2);
+(e) bài chỉ có côn trùng, thịt nuôi cấy, tảo, nấm mà không phải 08-EC7;
+(f) avatar/chatbot tư vấn mua sắm, agent dịch vụ, AI dạng công cụ được INCLUDE (phải là 06-EC2);
+(g) bài nhánh AI qua đủ 3a–3d nhưng bị EXCLUDE vì thiếu PI/WTP hoặc vì lĩnh vực phi marketing;
+(h) UNCERTAIN không có "Cần kiểm: …", hoặc UNCERTAIN trong khi tóm tắt đã rõ chỉ đo acceptance/liking;
+(i) TierF có nhãn/thông điệp/quảng cáo (phải là A-TF), hoặc A-TF không có kích thích truyền thông;
+(j) gắn A-Disc/disclosure hoặc RQ1 cho nhãn thực phẩm không liên quan AI;
+(k) INCLUDE phi marketing không ghi "Lĩnh vực: …", hoặc bài EXCLUDE lại có ghi;
+(l) có dùng EC10/social-mkt hoặc loại vì tạp chí;
+(m) Lý do không có trích dẫn nguyên văn; dòng không đủ 13 ô; ID trống.
+Xuất bảng: | ID | Lỗi | Trước | Sau |. Sau đó xuất lại bảng đầy đủ 13 cột chỉ cho các dòng đã sửa.
+```
+
+### R3. Kiểm chứng bài UNCERTAIN hoặc bài TierF/A-TF
+
+```
+Xem lại các bài ID: [...].
+Với từng bài, trả lời bằng trích dẫn nguyên văn từ nguồn:
+1. Thực phẩm cụ thể là gì? Thuộc cặp nào trong 4 cặp, hay 08-EC7 / 09-IC2?
+2. Biến phụ thuộc chính xác là gì? Ghi đúng tên biến trong tóm tắt (vd. "purchase intention", "willingness to try"). Biến đó có phải PI/WTP theo định nghĩa hẹp không?
+3. Có kích thích truyền thông không (thông điệp, nhãn, quảng cáo)?
+4. Quyết định cuối và bước dừng; ghi "GIỮ NGUYÊN" hoặc "THAY ĐỔI: … vì …".
+Xuất lại bảng 13 cột cho các bài này.
+```
+
+### R4. Tổng hợp cuối mỗi lô
+
+```
+Từ các bảng đã sửa trong cuộc trò chuyện này, tổng hợp:
+1. Số bài INCLUDE / EXCLUDE / UNCERTAIN.
+2. Số bài theo mã loại chính và theo bước dừng.
+3. Số bài theo nhánh (A-T1, A-T2, A-T3, A-Disc, A-TF, TierF, B-Meta) và theo RQ.
+4. Danh sách ID UNCERTAIN kèm nội dung "Cần kiểm".
+5. Danh sách ID gắn snowball và context.
+Chỉ dùng số liệu trong các bảng, không sàng lọc lại.
+```
+
+**Đối chiếu với kết quả cũ.** Làm trong Google Sheets: ghép bảng mới với quyết định cũ theo ID, lọc các dòng khác nhau. Không đưa quyết định cũ vào NotebookLM, để tránh notebook bị ảnh hưởng theo kết quả cũ.
+
+---
+
+## G. Nhật ký hiệu chỉnh
 
 ### Pilot 1 (50 bài, vòng TiAb)
 
